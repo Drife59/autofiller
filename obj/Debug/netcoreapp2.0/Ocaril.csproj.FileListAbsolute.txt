@@ -1,0 +1,33 @@
+C:/Users/bjbti/source/repos/Application WEB MVC/Application WEB MVC/bin/Debug/netcoreapp2.0/Ocaril.deps.json
+C:/Users/bjbti/source/repos/Application WEB MVC/Application WEB MVC/bin/Debug/netcoreapp2.0/Ocaril.runtimeconfig.json
+C:/Users/bjbti/source/repos/Application WEB MVC/Application WEB MVC/bin/Debug/netcoreapp2.0/Ocaril.runtimeconfig.dev.json
+C:/Users/bjbti/source/repos/Application WEB MVC/Application WEB MVC/bin/Debug/netcoreapp2.0/Ocaril.dll
+C:/Users/bjbti/source/repos/Application WEB MVC/Application WEB MVC/bin/Debug/netcoreapp2.0/Ocaril.pdb
+C:/Users/bjbti/source/repos/Application WEB MVC/Application WEB MVC/obj/Debug/netcoreapp2.0/Ocaril.csprojResolveAssemblyReference.cache
+C:/Users/bjbti/source/repos/Application WEB MVC/Application WEB MVC/obj/Debug/netcoreapp2.0/Ocaril.csproj.CoreCompileInputs.cache
+C:/Users/bjbti/source/repos/Application WEB MVC/Application WEB MVC/obj/Debug/netcoreapp2.0/Ocaril.AssemblyInfoInputs.cache
+C:/Users/bjbti/source/repos/Application WEB MVC/Application WEB MVC/obj/Debug/netcoreapp2.0/Ocaril.AssemblyInfo.cs
+C:/Users/bjbti/source/repos/Application WEB MVC/Application WEB MVC/obj/Debug/netcoreapp2.0/Ocaril.dll
+C:/Users/bjbti/source/repos/Application WEB MVC/Application WEB MVC/obj/Debug/netcoreapp2.0/Ocaril.pdb
+/home/benjamin/corail/WEB MVC/Application WEB MVC/bin/Debug/netcoreapp2.0/Ocaril.deps.json
+/home/benjamin/corail/WEB MVC/Application WEB MVC/bin/Debug/netcoreapp2.0/Ocaril.runtimeconfig.json
+/home/benjamin/corail/WEB MVC/Application WEB MVC/bin/Debug/netcoreapp2.0/Ocaril.runtimeconfig.dev.json
+/home/benjamin/corail/WEB MVC/Application WEB MVC/bin/Debug/netcoreapp2.0/Ocaril.dll
+/home/benjamin/corail/WEB MVC/Application WEB MVC/bin/Debug/netcoreapp2.0/Ocaril.pdb
+/home/benjamin/corail/WEB MVC/Application WEB MVC/obj/Debug/netcoreapp2.0/Ocaril.csprojResolveAssemblyReference.cache
+/home/benjamin/corail/WEB MVC/Application WEB MVC/obj/Debug/netcoreapp2.0/Ocaril.csproj.CoreCompileInputs.cache
+/home/benjamin/corail/WEB MVC/Application WEB MVC/obj/Debug/netcoreapp2.0/Ocaril.AssemblyInfoInputs.cache
+/home/benjamin/corail/WEB MVC/Application WEB MVC/obj/Debug/netcoreapp2.0/Ocaril.AssemblyInfo.cs
+/home/benjamin/corail/WEB MVC/Application WEB MVC/obj/Debug/netcoreapp2.0/Ocaril.dll
+/home/benjamin/corail/WEB MVC/Application WEB MVC/obj/Debug/netcoreapp2.0/Ocaril.pdb
+/home/benjamin/corail/autofiller/bin/Debug/netcoreapp2.0/Ocaril.deps.json
+/home/benjamin/corail/autofiller/bin/Debug/netcoreapp2.0/Ocaril.runtimeconfig.json
+/home/benjamin/corail/autofiller/bin/Debug/netcoreapp2.0/Ocaril.runtimeconfig.dev.json
+/home/benjamin/corail/autofiller/bin/Debug/netcoreapp2.0/Ocaril.dll
+/home/benjamin/corail/autofiller/bin/Debug/netcoreapp2.0/Ocaril.pdb
+/home/benjamin/corail/autofiller/obj/Debug/netcoreapp2.0/Ocaril.csprojResolveAssemblyReference.cache
+/home/benjamin/corail/autofiller/obj/Debug/netcoreapp2.0/Ocaril.csproj.CoreCompileInputs.cache
+/home/benjamin/corail/autofiller/obj/Debug/netcoreapp2.0/Ocaril.AssemblyInfoInputs.cache
+/home/benjamin/corail/autofiller/obj/Debug/netcoreapp2.0/Ocaril.AssemblyInfo.cs
+/home/benjamin/corail/autofiller/obj/Debug/netcoreapp2.0/Ocaril.dll
+/home/benjamin/corail/autofiller/obj/Debug/netcoreapp2.0/Ocaril.pdb

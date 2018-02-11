@@ -1,0 +1,11 @@
+c:\users\bjbti\source\repos\Application WEB MVC\Application WEB MVC\bin\Debug\netcoreapp2.0\Application WEB MVC.deps.json
+c:\users\bjbti\source\repos\Application WEB MVC\Application WEB MVC\bin\Debug\netcoreapp2.0\Application WEB MVC.runtimeconfig.json
+c:\users\bjbti\source\repos\Application WEB MVC\Application WEB MVC\bin\Debug\netcoreapp2.0\Application WEB MVC.runtimeconfig.dev.json
+c:\users\bjbti\source\repos\Application WEB MVC\Application WEB MVC\bin\Debug\netcoreapp2.0\Application WEB MVC.dll
+c:\users\bjbti\source\repos\Application WEB MVC\Application WEB MVC\bin\Debug\netcoreapp2.0\Application WEB MVC.pdb
+c:\users\bjbti\source\repos\Application WEB MVC\Application WEB MVC\obj\Debug\netcoreapp2.0\Application WEB MVC.csprojResolveAssemblyReference.cache
+c:\users\bjbti\source\repos\Application WEB MVC\Application WEB MVC\obj\Debug\netcoreapp2.0\Application WEB MVC.csproj.CoreCompileInputs.cache
+c:\users\bjbti\source\repos\Application WEB MVC\Application WEB MVC\obj\Debug\netcoreapp2.0\Application WEB MVC.AssemblyInfoInputs.cache
+c:\users\bjbti\source\repos\Application WEB MVC\Application WEB MVC\obj\Debug\netcoreapp2.0\Application WEB MVC.AssemblyInfo.cs
+c:\users\bjbti\source\repos\Application WEB MVC\Application WEB MVC\obj\Debug\netcoreapp2.0\Application WEB MVC.dll
+c:\users\bjbti\source\repos\Application WEB MVC\Application WEB MVC\obj\Debug\netcoreapp2.0\Application WEB MVC.pdb
