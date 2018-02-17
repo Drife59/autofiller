@@ -5,12 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using Website.Models;
+
 namespace Application_WEB_MVC.Controllers
 {
 
     //Test avec personnalisation maximale d'adresse
     //[Route("koukou/[controller]/[action]")]
-    [Route("/[controller]/[action]")]
+
+    //Laisse volontairement le paramètre action à personnaliser par chaque fonction
+    [Route("/[controller]/")]
     public class WebsiteController : Controller
     {
         //parametre yahou passable en argument ou dans l'url
@@ -20,44 +24,60 @@ namespace Application_WEB_MVC.Controllers
             return "Koukou " + yahou;
         }
 
-        [Route("{url_domaine}")]
-        
-        public string Url_domaine(string url_domaine)
+        [HttpGet]
+        [Route("{url_domaine}")]        
+        public IActionResult Check_existence(string url_domaine)
         {
-            return "Koukou " + url_domaine;
+            //Retour pour un domaine non trouvé
+            //return NotFound();
+
+            //retour pour un domaine trouvé
+            return Ok();
         }
 
+        [HttpPost]
+        [Route("{url_domaine}")]        
+        public IActionResult New_Domaine(string url_domaine)
+        {
+            return new ConflictResult();
+            return Ok();
+            //return "Création de " + url_domaine;
+        }
 
+        [HttpGet]
+        [Route("{url_domaine}/pivots")]        
+        public string Get_cles(string url_domaine)
+        {
+            return "Récupération des pivots de " + url_domaine;
+        }
+
+        //TODO: maj front
+        //Post: création d'un nouveau pivot
+        [HttpPost]
+        [Route("{url_domaine}/pivot")]        
+        public string New_pivot(string url_domaine, [FromBody] PivotDomaineRequest item)
+        {
+            /* 
+            if (item == null)
+            {
+                return BadRequest();
+            }
+            */
+            return "Création du pivot " + item.Pivot + " pour la clé " + item.Cle + " dans le domaine " + url_domaine;
+        }
+
+        //Put: mise à jour d'un pivot associé à une clée
+        [HttpPut]
+        [Route("{url_domaine}/pivot")]        
+        public string Maj_pivot(string url_domaine, [FromBody] PivotDomaineRequest item)
+        {
+            return "Maj du pivot " + item.Pivot + " pour la clé " + item.Cle + " dans le domaine " + url_domaine;
+        }
+
+        [HttpDelete("{url_domaine}")]
+        public IActionResult Delete(string url_domaine)
+        {
+            return new NoContentResult();
+        }
     }
-
-    /*
-    @app.route('/domaine/<path:url_domaine>', methods=['GET'])
-    def check_domaine_existance(url_domaine):
-        """Vérifie que le domaine existe bien"""
-
-
-    @app.route('/domaine/<path:url_domaine>', methods=['POST'])
-    def new_domaine(url_domaine):
-        """Création d'un nouveau domaine sur l'url concernée."""
-
-    @app.route('/domaine/<path:url_domaine>/cles', methods=['GET'])
-    def get_cles_domaines(url_domaine):
-        """Retour des cles en paramètre"""
-
-    # Il est important de différencier la création d'un nouveau pivot de sa
-    # mise à jour. Ces dernières ne déclencherons pas le même algo.
-    # POST = création, PUT = mise à jour
-
-    @app.route('/domaine/<path:url_domaine>/pivot', methods=['POST'])
-    def add_pivot_domaine(url_domaine):
-        """Création d'un nouveau pivot pour le domaine."""
-
-    @app.route('/domaine/<url_domaine>/pivot', methods=['PUT'])
-    def maj_pivot_domaine(url_domaine):
-        """Mise à jour de la valeur d'un pivot pour le domaine.
-
-    @app.route('/domaine/<path:url_domaine>', methods=['DELETE'])
-    def delete_domaine(url_domaine):
-        """Suppression d'un domaine."""
-        */
 }
