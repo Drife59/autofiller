@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -39,8 +40,8 @@ namespace Application_WEB_MVC.Controllers
         [Route("{url_domaine}")]        
         public IActionResult New_Domaine(string url_domaine)
         {
-            return new ConflictResult();
-            return Ok();
+            return StatusCode((int)HttpStatusCode.Conflict);
+            //return Ok();
             //return "Création de " + url_domaine;
         }
 

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-//Nécessaire pour IHttpActionResult
-//using System.Web.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
+//Import de nos modèles dédiés
+using Website.Models;
 
 namespace Application_WEB_MVC.Controllers
 {
@@ -14,11 +15,11 @@ namespace Application_WEB_MVC.Controllers
     public class UserController : Controller
     {
         //parametre yahou passable en argument ou dans l'url
-        [Route("{yahou?}")]
+        /*[Route("{yahou?}")]
         public string Index(int? yahou)
         {
             return "Koukou " + yahou;
-        }
+        }*/
 
         [HttpPost]
         [Route("/user/{courriel}")]
@@ -47,93 +48,46 @@ namespace Application_WEB_MVC.Controllers
         POST = création, PUT = mise à jour
         */
 
+        [HttpPost]
+        [Route("/user/{courriel}/pivots")]
+        public IActionResult add_pivot_user(string courriel, [FromBody] PivotUserRequest item)
+        {
+            if (item == null || item.Pivot == null || item.Value == null)
+            {
+                return BadRequest("You need to give pivot & value for user");
+            }
 
+            //Utilisateur non connu
+            //return StatusCode((int)HttpStatusCode.NotFound);
 
+            //Everything Ok :)
+            return Ok("Création du pivot " + item.Pivot + " avec la valeur " + item.Value + " pour le user " + courriel);
+        }
+
+        [HttpPut]
+        [Route("/user/{courriel}/pivots")]
+        public IActionResult maj_pivot_user(string courriel, [FromBody] PivotUserRequest item)
+        {
+            if (item == null || item.Pivot == null || item.Value == null)
+            {
+                return BadRequest("You need to give pivot & value for user");
+            }
+
+            //Utilisateur non connu
+            //return StatusCode((int)HttpStatusCode.NotFound);
+
+            //Everything Ok :)
+            return Ok("Maj du pivot " + item.Pivot + " avec la valeur " + item.Value + " pour le user " + courriel);
+        }
+
+        [HttpDelete]
+        [Route("/user/{courriel}")]
+        public IActionResult delete_user(string courriel){
+            //Utilisateur non connu
+            //return StatusCode((int)HttpStatusCode.NotFound);
+            
+            //Tout se passe bien, 204 OK 
+            return new NoContentResult();
+        }
     }
-
-    /*
-    @app.route('/user/<courriel>/pivot', methods=['POST'])
-    def add_pivot_user(courriel):
-        """Création d'un nouveau pivot pour le user."""
-
-        user = None
-        try:
-            user = User.objects.get(email=courriel)
-        except DoesNotExist:
-            abort(404, "L'utilisateur n'existe pas.")
-
-        #Validation du corps de la requête
-        nom_pivot = None
-        try:
-            nom_pivot = request.get_json()['nom_pivot']
-        except Exception as e:
-            abort(400, "Erreur lors de la récupération de la variable "
-                       "'nom_pivot': %s" % e)
-
-        if nom_pivot in user.pivots.keys():
-            abort(409, "Le pivot existe déjà pour cet utilisateur.")
-
-        valeur_pivot = None
-        try:
-            valeur_pivot = request.get_json()['valeur_pivot']
-        except Exception as e:
-            abort(400, "Erreur lors de la récupération de la variable "
-                       "'valeur_pivot': %s" % e)
-
-        #Tout s'est bien passé, sauvegarde de l'utilisateur et retour info
-        user.pivots[nom_pivot] = valeur_pivot
-        user.save()
-
-        return jsonify({"pivot": nom_pivot, "valeur": valeur_pivot})
-
-
-    @app.route('/user/<courriel>/pivot', methods=['PUT'])
-    def maj_pivot_user(courriel):
-        """Mise à jour de la valeur d'un pivot pour le user.
-        
-        Attention, interdit de créer un nouveau pivot avec cette méthode.
-        """
-
-        user = None
-        try:
-            user = User.objects.get(email=courriel)
-        except DoesNotExist:
-            abort(404, "L'utilisateur n'existe pas.")
-
-        # Validation du corps de la requête
-        nom_pivot = None
-        try:
-            nom_pivot = request.get_json()['nom_pivot']
-        except Exception as e:
-            abort(400, "Erreur lors de la récupération de la variable "
-                       "'nom_pivot': %s" % e)
-
-        if nom_pivot not in user.pivots.keys():
-            abort(400, "Le pivot n'existe pas encore pour cet utilisateur.")
-
-        valeur_pivot = None
-        try:
-            valeur_pivot = request.get_json()['valeur_pivot']
-        except Exception as e:
-            abort(400, "Erreur lors de la récupération de la variable "
-                       "'valeur_pivot': %s" % e)
-
-        # Tout s'est bien passé, sauvegarde de l'utilisateur et retour info
-        user.pivots[nom_pivot] = valeur_pivot
-        user.save()
-
-        return "Le pivot '%s' vaut désormais %s pour le user: %s" \
-               % (nom_pivot, valeur_pivot, courriel)
-
-    @app.route('/user/<courriel>', methods=['DELETE'])
-    def delete_user(courriel):
-        """Création d'un nouvel utilisateur avec son courriel"""
-        try:
-            user = User.objects.get(email=courriel)
-        except DoesNotExist:
-            abort(404, "Utilisateur introuvable")
-
-        user.delete()
-        return 'Suppression de l\'utilisateur: %s' % courriel
-    */
 }

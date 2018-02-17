@@ -6,4 +6,11 @@ namespace Website.Models
         public string Cle { get; set; }
         public string Pivot { get; set; }
     }
+
+    //Object "Pivot user" for front app communication
+    public class PivotUserRequest
+    {
+        public string Pivot { get; set; }
+        public string Value { get; set; }
+    }
 }
