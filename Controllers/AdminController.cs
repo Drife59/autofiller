@@ -7,13 +7,20 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 //Import de nos modèles dédiés
-using Website.Models;
+using Autofiller.Models;
 
 namespace Application_WEB_MVC.Controllers
 {
     [Route("/[controller]")]
     public class AdminController : Controller
     {
+
+        private readonly AutofillerContext _context;
+
+        public AdminController(AutofillerContext context)
+        {
+            _context = context;
+        }
 
         //Remplace directement base un pivot par un autre
         [HttpPost]

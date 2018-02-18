@@ -8,8 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-//Import des modèle perso
-using TodoApi.Models;
+using Autofiller.Models;
 
 namespace Application_WEB_MVC
 {
@@ -25,9 +24,13 @@ namespace Application_WEB_MVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //Création et import du contexte de base de données 
-            services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
+            //Old example 
+            //services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
             services.AddMvc();
+            
+            //Create the DB connection to Azure SQL server
+            var connection = @"Server=corailme.database.windows.net;Database=Corail;Trusted_Connection=True;ConnectRetryCount=0";
+            services.AddDbContext<AutofillerContext>(options => options.UseSqlServer(connection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

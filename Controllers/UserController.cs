@@ -7,13 +7,21 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 //Import de nos modèles dédiés
-using Website.Models;
+using Autofiller.Models;
 
 namespace Application_WEB_MVC.Controllers
 {
+    
     [Route("/[controller]")]
     public class UserController : Controller
     {
+        private readonly AutofillerContext _context;
+
+        public UserController(AutofillerContext context)
+        {
+            _context = context;
+        }
+        
         //parametre yahou passable en argument ou dans l'url
         /*[Route("{yahou?}")]
         public string Index(int? yahou)

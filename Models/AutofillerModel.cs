@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
-namespace Website.Models
+namespace Autofiller.Models
 {
     /* Object non persisted, only for front app communication in requests */
 

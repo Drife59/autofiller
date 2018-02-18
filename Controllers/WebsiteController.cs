@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-using Website.Models;
+using Autofiller.Models;
 
 namespace Application_WEB_MVC.Controllers
 {
@@ -18,6 +18,14 @@ namespace Application_WEB_MVC.Controllers
     [Route("/[controller]/")]
     public class WebsiteController : Controller
     {
+
+        private readonly AutofillerContext _context;
+
+        public WebsiteController(AutofillerContext context)
+        {
+            _context = context;
+        }
+
         //parametre yahou passable en argument ou dans l'url
         [Route("{yahou?}")]
         public string Index(int? yahou)
@@ -40,6 +48,7 @@ namespace Application_WEB_MVC.Controllers
         [Route("{url_domaine}")]        
         public IActionResult New_Domaine(string url_domaine)
         {
+
             return StatusCode((int)HttpStatusCode.Conflict);
             //return Ok();
             //return "Création de " + url_domaine;
