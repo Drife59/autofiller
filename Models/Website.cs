@@ -32,6 +32,7 @@ namespace Website.Models
     public class Website
     {
         public long websiteId { get; set; }
+        [Required]
         public string domaine { get; set; }
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
@@ -43,16 +44,19 @@ namespace Website.Models
     public class Key
     {
         public long keyId { get; set; }
+        [Required]
         public string code { get; set; }
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
         //Foreign key from website
+        [Required]
         public virtual Website Website { get; set; }
     }
 
     public class Pivot
     {
         public long pivotId { get; set; }
+        [Required]
         public string name { get; set; }
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
@@ -65,6 +69,7 @@ namespace Website.Models
     public class UserValue
     {
         public long userValueId { get; set; }
+        [Required]
         public string value { get; set; }
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
@@ -77,6 +82,7 @@ namespace Website.Models
     public class User
     {
         public long userId { get; set; }
+        [Required]
         public string email { get; set; }
         public string family_name { get; set; }
         public string surname { get; set; }
@@ -89,6 +95,4 @@ namespace Website.Models
         //Foreign list of keys
         public virtual List<UserValue> UserValue { get; set; }
     }
-
-
 }
