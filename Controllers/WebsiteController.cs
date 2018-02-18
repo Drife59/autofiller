@@ -49,8 +49,15 @@ namespace Application_WEB_MVC.Controllers
         public IActionResult New_Domaine(string url_domaine)
         {
 
-            return StatusCode((int)HttpStatusCode.Conflict);
-            //return Ok();
+            Website new_website = new Website();
+            new_website.domaine = url_domaine;
+            new_website.created_at = new DateTime();
+            new_website.updated_at = new DateTime();
+            _context.Add(new_website);
+            _context.SaveChanges();
+
+            //return StatusCode((int)HttpStatusCode.Conflict);
+            return Ok(new_website);
             //return "Création de " + url_domaine;
         }
 
