@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -29,7 +30,8 @@ namespace Application_WEB_MVC
             services.AddMvc();
             
             //Create the DB connection to Azure SQL server
-            var connection = @"Server=corailme.database.windows.net;Database=Corail;Trusted_Connection=True;ConnectRetryCount=0";
+            //var connection = "Server=corailme.database.windows.net;Database=autofiller;User ID=Corail;Password=Nousallonsservirlemonde59;Trusted_Connection=True;ConnectRetryCount=0";
+            var connection = @"Server=tcp:corailme.database.windows.net,1433;Initial Catalog=autofiller;Persist Security Info=False;User ID=Corail;Password=Nousallonsservirlemonde59;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30";
             services.AddDbContext<AutofillerContext>(options => options.UseSqlServer(connection));
         }
 
