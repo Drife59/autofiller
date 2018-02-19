@@ -49,16 +49,22 @@ namespace Application_WEB_MVC.Controllers
         public IActionResult New_Domaine(string url_domaine)
         {
 
-            Website new_website = new Website();
-            new_website.domaine = url_domaine;
-            new_website.created_at = new DateTime();
-            new_website.updated_at = new DateTime();
-            _context.Add(new_website);
-            _context.SaveChanges();
+            var website = _context.Websites
+                .Where(w => w.domaine == url_domaine) 
+                .FirstOrDefault();
 
-            //return StatusCode((int)HttpStatusCode.Conflict);
-            return Ok(new_website);
-            //return "Création de " + url_domaine;
+            //Only add website if it does not already exist
+            if( website == null){
+                Website new_website = new Website();
+                new_website.domaine = url_domaine;
+                new_website.created_at = DateTime.Now;
+                new_website.updated_at = DateTime.Now;
+                _context.Add(new_website);
+                _context.SaveChanges();              
+                return Ok(new_website);
+            }else{
+                return StatusCode((int)HttpStatusCode.Conflict);
+            }
         }
 
         [HttpGet]
