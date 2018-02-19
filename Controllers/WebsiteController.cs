@@ -37,11 +37,14 @@ namespace Application_WEB_MVC.Controllers
         [Route("{url_domaine}")]        
         public IActionResult Check_existence(string url_domaine)
         {
-            //Retour pour un domaine non trouvé
-            //return NotFound();
-
-            //retour pour un domaine trouvé
-            return Ok();
+            var website = _context.Websites
+                .Where(w => w.domaine == url_domaine) 
+                .FirstOrDefault();
+            
+            if(website == null){
+                return NotFound();
+            }
+            return Ok(website);
         }
 
         [HttpPost]
@@ -69,24 +72,61 @@ namespace Application_WEB_MVC.Controllers
 
         [HttpGet]
         [Route("{url_domaine}/pivots")]        
-        public string Get_cles(string url_domaine)
+        public IActionResult Get_cles(string url_domaine)
         {
-            return "Récupération des pivots de " + url_domaine;
+            var website = _context.Websites
+                .Where(w => w.domaine == url_domaine) 
+                .FirstOrDefault();
+            
+            if(website == null){
+                return NotFound();
+            }
+
+            //TODO finish(bg)
+            return Ok(website.Keys);
         }
 
         //TODO: maj front
         //Post: création d'un nouveau pivot
         [HttpPost]
         [Route("{url_domaine}/pivot")]        
-        public string New_pivot(string url_domaine, [FromBody] PivotDomaineRequest item)
+        public IActionResult New_pivot(string url_domaine, [FromBody] PivotDomaineRequest item)
         {
-            /* 
+
             if (item == null)
             {
                 return BadRequest();
             }
-            */
-            return "Création du pivot " + item.Pivot + " pour la clé " + item.Cle + " dans le domaine " + url_domaine;
+
+            var website = _context.Websites
+                .Where(w => w.domaine == url_domaine) 
+                .FirstOrDefault();
+            
+            if(website == null){
+                return NotFound();
+            }
+
+            var pivot = new Pivot();
+            pivot.name = item.Pivot;
+            pivot.created_at = DateTime.Now;
+            pivot.updated_at = DateTime.Now;
+            //pivot.Keys = new List<Key>();
+            _context.Add(pivot);
+
+            var key = new Key();
+            key.code = item.Cle;
+            key.Pivot = pivot;
+            key.created_at = DateTime.Now;
+            key.updated_at = DateTime.Now;
+            key.Website = website;
+            _context.Add(key);
+
+            //Don't forget to update list of key !
+            //pivot.Keys.Append(key);
+            _context.Add(pivot);
+
+            _context.SaveChanges(); 
+            return Ok(key);
         }
 
         //Put: mise à jour d'un pivot associé à une clée
