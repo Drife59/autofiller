@@ -1,6 +1,8 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Autofiller.Models
@@ -37,8 +39,9 @@ namespace Autofiller.Models
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
 
-        public virtual List<Key> Keys { get; set; } 
-
+        [JsonIgnore] 
+        [IgnoreDataMember]
+        public virtual ICollection<Key> Keys { get; set; } 
     }
 
     public class Key
@@ -48,9 +51,10 @@ namespace Autofiller.Models
         public string code { get; set; }
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
-        //Foreign key from website
         [Required]
         public virtual Website Website { get; set; }
+        [Required]
+        public virtual Pivot Pivot { get; set; }
     }
 
     public class Pivot
@@ -61,9 +65,13 @@ namespace Autofiller.Models
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
 
-        //List of foreign Key
-        public virtual List<UserValue> UserValue { get; set; }
-        public virtual List<Key> Key { get; set; }
+        //ICollection of foreign Key
+        [JsonIgnore] 
+        [IgnoreDataMember]
+        public virtual ICollection<UserValue> UserValues { get; set; }
+        [JsonIgnore] 
+        [IgnoreDataMember]
+        public virtual ICollection<Key> Keys { get; set; }
     }
 
     public class UserValue
@@ -92,7 +100,8 @@ namespace Autofiller.Models
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
 
-        //Foreign list of keys
-        public virtual List<UserValue> UserValue { get; set; }
+        [JsonIgnore] 
+        [IgnoreDataMember]
+        public virtual ICollection<UserValue> UserValues { get; set; }
     }
 }
