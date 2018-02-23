@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+
 
 using Autofiller.Models;
 
@@ -75,18 +78,17 @@ namespace Application_WEB_MVC.Controllers
         public IActionResult Get_cles(string url_domaine)
         {
             var website = _context.Websites
-                .Where(w => w.domaine == url_domaine) 
+                .Where(w => w.domaine == url_domaine)
+                .Include(w => w.Keys)
+                .ThenInclude(w => w.Pivot)
                 .FirstOrDefault();
             
             if(website == null){
                 return NotFound();
             }
-
-            //TODO finish(bg)
             return Ok(website.Keys);
         }
 
-        //TODO: maj front
         //Post: création d'un nouveau pivot
         [HttpPost]
         [Route("{url_domaine}/pivot")]        
@@ -99,7 +101,7 @@ namespace Application_WEB_MVC.Controllers
             }
 
             var website = _context.Websites
-                .Where(w => w.domaine == url_domaine) 
+                .Where(w => w.domaine == url_domaine)
                 .FirstOrDefault();
             
             if(website == null){
@@ -110,7 +112,6 @@ namespace Application_WEB_MVC.Controllers
             pivot.name = item.Pivot;
             pivot.created_at = DateTime.Now;
             pivot.updated_at = DateTime.Now;
-            //pivot.Keys = new List<Key>();
             _context.Add(pivot);
 
             var key = new Key();
@@ -121,20 +122,30 @@ namespace Application_WEB_MVC.Controllers
             key.Website = website;
             _context.Add(key);
 
-            //Don't forget to update list of key !
-            //pivot.Keys.Append(key);
-            _context.Add(pivot);
-
-            _context.SaveChanges(); 
+            _context.SaveChanges();
             return Ok(key);
         }
 
         //Put: mise à jour d'un pivot associé à une clée
         [HttpPut]
         [Route("{url_domaine}/pivot")]        
-        public string Maj_pivot(string url_domaine, [FromBody] PivotDomaineRequest item)
+        public IActionResult Maj_pivot(string url_domaine, [FromBody] PivotDomaineRequest item)
         {
-            return "Maj du pivot " + item.Pivot + " pour la clé " + item.Cle + " dans le domaine " + url_domaine;
+
+            var website = _context.Websites
+                .Where(w => w.domaine == url_domaine)
+                .FirstOrDefault();
+            
+            if(website == null ){
+                return NotFound();
+            }
+
+            //Key must exist, we are in PUT method
+            var keys = _context.Keys
+                .Where(k => k.Website == website)
+                .ToList();
+
+            return Ok(keys);
         }
 
         [HttpDelete("{url_domaine}")]
