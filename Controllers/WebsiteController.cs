@@ -89,7 +89,7 @@ namespace Application_WEB_MVC.Controllers
             return Ok(website.Keys);
         }
 
-        //Post: création d'un nouveau pivot
+        //Post: création d'un nouveau pivot sur une clée
         [HttpPost]
         [Route("{url_domaine}/pivot")]        
         public IActionResult New_pivot(string url_domaine, [FromBody] PivotDomaineRequest item)
@@ -126,7 +126,8 @@ namespace Application_WEB_MVC.Controllers
             return Ok(key);
         }
 
-        //Put: mise à jour d'un pivot associé à une clée
+        //Put: Update pivot associated to key
+        //return pivot associated
         [HttpPut]
         [Route("{url_domaine}/pivot")]        
         public IActionResult Maj_pivot(string url_domaine, [FromBody] PivotDomaineRequest item)
@@ -141,16 +142,44 @@ namespace Application_WEB_MVC.Controllers
             }
 
             //Key must exist, we are in PUT method
-            var keys = _context.Keys
+            var key = _context.Keys
                 .Where(k => k.Website == website)
-                .ToList();
+                .Where(k => k.code == item.Cle)
+                .FirstOrDefault();
 
-            return Ok(keys);
+            if(key == null ){
+                return BadRequest("Key does not exist");
+            }
+
+            //Get pivot we want to set on Key
+            var pivot = _context.Pivots
+                .Where(p => p.name == item.Pivot)
+                .FirstOrDefault();
+
+            //it must exist !!
+            if(pivot == null ){
+                return BadRequest("Pivot does not exist");
+            }
+
+            key.Pivot = pivot;
+            _context.SaveChanges();
+            return Ok(pivot);
         }
 
         [HttpDelete("{url_domaine}")]
         public IActionResult Delete(string url_domaine)
         {
+            var website = _context.Websites
+                .Where(w => w.domaine == url_domaine)
+                .FirstOrDefault();
+            
+            if(website == null ){
+                return NotFound();
+            }
+
+            _context.Websites.Remove(website);
+            _context.SaveChanges();
+
             return new NoContentResult();
         }
     }
