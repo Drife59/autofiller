@@ -1,12 +1,13 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
-//Import de nos modèles dédiés
 using Autofiller.Models;
 
 namespace Application_WEB_MVC.Controllers
@@ -22,79 +23,158 @@ namespace Application_WEB_MVC.Controllers
             _context = context;
         }
         
-        //parametre yahou passable en argument ou dans l'url
-        /*[Route("{yahou?}")]
-        public string Index(int? yahou)
-        {
-            return "Koukou " + yahou;
-        }*/
-
         [HttpPost]
-        [Route("/user/{courriel}")]
-        public IActionResult new_user(string courriel){
-            //Cas du conflict
-            //return StatusCode((int)HttpStatusCode.Conflict);
-            
-            //Tout se passe bien, 200OK 
-            return Ok("haha koukoukoukou");
-            //return StatusCode(200, "Ha que koukou !");
+        [Route("/user/{email}")]
+        public IActionResult new_user(string email){
+
+            var user = _context.Users
+                .Where(u => u.email == email) 
+                .FirstOrDefault();
+
+            //Only add website if it does not already exist
+            if( user == null){
+                User new_user = new User();
+                new_user.email = email;
+                new_user.created_at = DateTime.Now;
+                new_user.updated_at = DateTime.Now;
+                _context.Add(new_user);
+                _context.SaveChanges();              
+                return Ok(new_user);
+            }else{
+                return StatusCode((int)HttpStatusCode.Conflict);
+            }
         }
 
+        //Return all value for user
         [HttpGet]
-        [Route("/user/{courriel}/pivots")]
-        public IActionResult get_pivots_user(string courriel){
-            //Utilisateur non connu
-            return StatusCode((int)HttpStatusCode.NotFound);
+        [Route("/user/{email}/pivots")]
+        public IActionResult get_pivots_user(string email){
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
             
-            //Tout se passe bien, 200OK 
-            //return Ok("haha koukoukoukou");
-            //return StatusCode(200, "Ha que koukou !");
+            if(user == null){
+                return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var user_values = _context.UserValues
+                .Where(u => u.User == user)
+                .Include(u => u.Pivot)
+                .ToList();
+            return Ok(user_values);
         }
 
-        /*Il est important de différencier la création d'une nouvelle clé de sa
-        mise à jour. Ces dernières ne déclencherons pas le même algo.
-        POST = création, PUT = mise à jour
-        */
-
+        //Post: Create a new value for a user, associated with a pivot
         [HttpPost]
-        [Route("/user/{courriel}/pivots")]
-        public IActionResult add_pivot_user(string courriel, [FromBody] PivotUserRequest item)
+        [Route("{email}/pivot")]        
+        public IActionResult New_pivot_user(string email, [FromBody] PivotUserRequest item)
         {
             if (item == null || item.Pivot == null || item.Value == null)
             {
                 return BadRequest("You need to give pivot & value for user");
             }
 
-            //Utilisateur non connu
-            //return StatusCode((int)HttpStatusCode.NotFound);
+            var user = _context.Users
+                .Where(u => u.email == email) 
+                .FirstOrDefault();
 
-            //Everything Ok :)
-            return Ok("Création du pivot " + item.Pivot + " avec la valeur " + item.Value + " pour le user " + courriel);
-        }
-
-        [HttpPut]
-        [Route("/user/{courriel}/pivots")]
-        public IActionResult maj_pivot_user(string courriel, [FromBody] PivotUserRequest item)
-        {
-            if (item == null || item.Pivot == null || item.Value == null)
-            {
-                return BadRequest("You need to give pivot & value for user");
+            if(user == null){
+                return NotFound();
             }
 
-            //Utilisateur non connu
-            //return StatusCode((int)HttpStatusCode.NotFound);
+            var pivot = _context.Pivots
+                .Where(p => p.name == item.Pivot)
+                .FirstOrDefault();
 
-            //Everything Ok :)
-            return Ok("Maj du pivot " + item.Pivot + " avec la valeur " + item.Value + " pour le user " + courriel);
-        }
+            //If a value already exist for this pivtos, forbid it
+            var user_value = _context.UserValues
+                .Where(uv => uv.Pivot == pivot)
+                .FirstOrDefault();
+            if( user_value != null){
+                return BadRequest("This pivot already exist for this user");
+            }
 
-        [HttpDelete]
-        [Route("/user/{courriel}")]
-        public IActionResult delete_user(string courriel){
-            //Utilisateur non connu
-            //return StatusCode((int)HttpStatusCode.NotFound);
+            user_value = new UserValue();
+            user_value.value = item.Value;
+            user_value.created_at = DateTime.Now;
+            user_value.updated_at = DateTime.Now;
+            user_value.User = user;
+
+            //If this new pivot does not exist at all in DB, add it
+            if( pivot == null){
+                pivot = new Pivot();
+                pivot.name = item.Pivot;
+                pivot.created_at = DateTime.Now;
+                pivot.updated_at = DateTime.Now;
+                _context.Add(pivot);
+            }
+            //link the new value to existing pivot
+            user_value.Pivot = pivot;
             
-            //Tout se passe bien, 204 OK 
+            _context.Add(user_value);
+            _context.SaveChanges();
+            return Ok(user_value);
+        }
+
+        //Put: set another value for the pivot
+        [HttpPut]
+        [Route("{email}/pivot")]        
+        public IActionResult Maj_pivot(string email, [FromBody] PivotUserRequest item)
+        {
+
+            if (item == null || item.Pivot == null || item.Value == null)
+            {
+                return BadRequest("You need to give pivot & value for user");
+            }
+
+            var user = _context.Users
+                .Where(u => u.email == email) 
+                .FirstOrDefault();
+
+            if(user == null){
+                return NotFound();
+            }
+            
+            var pivot = _context.Pivots
+                .Where(p => p.name == item.Pivot) 
+                .FirstOrDefault();
+
+            if( pivot == null){
+                return BadRequest("This pivot does not exist for anybody. Cannot update it.");
+            }
+
+            var user_value = _context.UserValues
+                .Where(u => u.value == item.Value)
+                .Where(u => u.User == user)
+                .FirstOrDefault();
+
+            //This value did not exist for user, adding it
+            if( user_value == null){
+                user_value = new UserValue();
+                user_value.value = item.Value;
+                user_value.created_at = DateTime.Now;
+                user_value.updated_at = DateTime.Now;
+                user_value.User = user;
+            }
+            //Linking user_value to existing pivot
+            user_value.Pivot = pivot;
+            _context.SaveChanges();
+            return Ok(user_value);
+        }
+
+        [HttpDelete("{email}")]
+        public IActionResult Delete(string email)
+        {
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null ){
+                return NotFound();
+            }
+
+            _context.Users.Remove(user);
+            _context.SaveChanges();
             return new NoContentResult();
         }
     }
