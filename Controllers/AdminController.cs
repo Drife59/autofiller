@@ -23,14 +23,39 @@ namespace Application_WEB_MVC.Controllers
             _context = context;
         }
 
-        //Replace a pivot in db
+        //Replace a pivot in db TODO
         [HttpPost]
         [Route("/admin/pivot/apply_merge/{pivot_origine}/{pivot_remplacement}")]
-        public IActionResult remplacement_direct(string pivot_origine, string pivot_remplacement){
+        public IActionResult remplacement_direct(int pivot_origine_id, int pivot_remplacement_id){
 
+            var pivot_orig = _context.Pivots
+                .Where(p => p.pivotId == pivot_origine_id)
+                .FirstOrDefault();
+
+            var pivot_remp = _context.Pivots
+                .Where(p => p.pivotId == pivot_remplacement_id)
+                .FirstOrDefault();
+
+            var user_value = _context.UserValues
+                .Where(uv => uv.Pivot == pivot_orig)
+                .ToList();
+
+            foreach(UserValue uv in user_value){
+                uv.Pivot = pivot_remp;
+                _context.Add(uv);
+            }
+
+            var keys = _context.Keys
+                .Where(k => k.Pivot == pivot_orig)
+                .ToList();
+
+            foreach(Key k in keys){
+                k.Pivot = pivot_remp;
+                _context.Add(k);
+            }
+            _context.SaveChanges();
             
-            //Tout se passe bien, 200OK 
-            return Ok("remplacement de " + pivot_origine + " par " + pivot_remplacement);
+            return Ok("remplacement de " + pivot_orig.name + " par " + pivot_remp.name);
         }
 
         //Record a new merge request
