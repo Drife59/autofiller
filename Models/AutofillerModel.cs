@@ -104,4 +104,16 @@ namespace Autofiller.Models
         [IgnoreDataMember]
         public virtual ICollection<UserValue> UserValues { get; set; }
     }
+
+    public class Merge
+    {
+        public long mergeId { get; set; }
+        public User User { get; set; }
+        public Website Website { get; set; }
+        public Pivot PivotFromUser { get; set; }
+        public Pivot PivotFromWebsite { get; set; }
+        [Required]
+        public DateTime created_at { get; set; }
+        public DateTime treated_at { get; set; }
+    }
 }
