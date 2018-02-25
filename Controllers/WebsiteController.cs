@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 using System;
 using System.Collections.Generic;
@@ -23,10 +24,16 @@ namespace Application_WEB_MVC.Controllers
     {
 
         private readonly AutofillerContext _context;
+        //private readonly IWebsiteRepository _websiteRepository;
+        private readonly ILogger _logger;
 
-        public WebsiteController(AutofillerContext context)
+        public WebsiteController(AutofillerContext context, 
+                                //IWebsiteRepository WebsiteRepository,
+                                ILogger<WebsiteController> logger)
         {
             _context = context;
+            //_websiteRepository = WebsiteRepository;
+            _logger = logger;
         }
 
         //parametre yahou passable en argument ou dans l'url
@@ -108,13 +115,30 @@ namespace Application_WEB_MVC.Controllers
                 return NotFound();
             }
 
-            var pivot = new Pivot();
-            pivot.name = item.Pivot;
-            pivot.created_at = DateTime.Now;
+            var key = _context.Keys
+                .Where(k => k.code == item.Cle)
+                .Where(k => k.Website == website)
+                .FirstOrDefault();
+            
+            if( key != null ){
+                return BadRequest("This key already exist for this Website");
+            }
+
+            var pivot = _context.Pivots
+                .Where(p => p.name == item.Pivot) 
+                .FirstOrDefault();
+
+            //New pivot in all db, create it
+            if( pivot == null){
+                pivot = new Pivot();
+                pivot.name = item.Pivot;
+                pivot.created_at = DateTime.Now;
+                _logger.LogInformation("WebsiteController: create for the first time pivot " + pivot.name);
+            }
             pivot.updated_at = DateTime.Now;
             _context.Add(pivot);
 
-            var key = new Key();
+            key = new Key();
             key.code = item.Cle;
             key.Pivot = pivot;
             key.created_at = DateTime.Now;
@@ -156,7 +180,7 @@ namespace Application_WEB_MVC.Controllers
                 .Where(p => p.name == item.Pivot)
                 .FirstOrDefault();
 
-            //it must exist !!
+            //it must exist, his value must have been retrieved
             if(pivot == null ){
                 return BadRequest("Pivot does not exist");
             }
