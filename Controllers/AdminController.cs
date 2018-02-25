@@ -1,12 +1,13 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
-//Import de nos modèles dédiés
 using Autofiller.Models;
 
 namespace Application_WEB_MVC.Controllers
@@ -22,19 +23,17 @@ namespace Application_WEB_MVC.Controllers
             _context = context;
         }
 
-        //Remplace directement base un pivot par un autre
+        //Replace a pivot in db
         [HttpPost]
-        [Route("/admin/pivot/remplacement_direct/{pivot_origine}/{pivot_remplacement}")]
+        [Route("/admin/pivot/apply_merge/{pivot_origine}/{pivot_remplacement}")]
         public IActionResult remplacement_direct(string pivot_origine, string pivot_remplacement){
 
-            //A coder côté back ?
-            //deduplication_volee_direct(pivot_origine, pivot_remplacement)
             
             //Tout se passe bien, 200OK 
             return Ok("remplacement de " + pivot_origine + " par " + pivot_remplacement);
         }
 
-        //Enregistre une nouvelle demande de merge
+        //Record a new merge request
         [HttpPost]
         [Route("/admin/pivot/remplacement_async/{pivot_origine}/{pivot_remplacement}")]
         public IActionResult remplacement_async(string pivot_origine, string pivot_remplacement,
@@ -46,23 +45,44 @@ namespace Application_WEB_MVC.Controllers
                 return BadRequest("You need to give email, domaine, cle_req & valeur for merge request");
             }
 
+            //Load Data from DB to create a "high level" merge request
+            var merge = new Merge();
+            merge.created_at = DateTime.Now;
 
-            //TODO algo à faire de préparation de merge:
-            //# 2) On prend un domaine comportant le pivot de remplacement
-            //# On récupère la clé qui correspond
+            var user = _context.Users
+                .Where(u => u.email == merge_request.email) 
+                .FirstOrDefault();
 
-            //Tout se passe bien, 200OK 
-            return Ok("Merge de " + pivot_origine + " par " + pivot_remplacement + 
-                      " pour " + merge_request.email + " depuis " + merge_request.domaine);
+            merge.User = user;
+
+            var website = _context.Websites
+                .Where(w => w.domaine == merge_request.domaine)
+                .FirstOrDefault();
+
+            merge.Website = website;
+
+            var pivot_orig = _context.Pivots
+                .Where(p => p.name == pivot_origine)
+                .FirstOrDefault();
+
+            merge.PivotFromUser = pivot_orig;
+
+            var pivot_remp = _context.Pivots
+                .Where(p => p.name == pivot_remplacement)
+                .FirstOrDefault();
+            
+            merge.PivotFromWebsite = pivot_remp;
+
+            _context.Add(merge);
+            _context.SaveChanges(); 
+            return Ok(merge);      
         }
 
-        //Retour de tous les merges en attente de remplacement
+        //Return all merge pending
         [HttpGet]
-        [Route("/admin/pivot/attente/{nombre}")]
+        [Route("/admin/merges/{nombre}")]
         public IActionResult pivot_attente(int nombre){
-
-            //Tout se passe bien, 200OK 
-            return Ok("Retour de " + nombre + " merges.");
+            return Ok(_context.Merges.Take(nombre));
         }
     }
 }
