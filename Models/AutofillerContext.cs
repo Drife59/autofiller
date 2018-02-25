@@ -13,5 +13,6 @@ namespace Autofiller.Models
         public DbSet<Pivot> Pivots { get; set; }
         public DbSet<UserValue> UserValues { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Merge> Merges { get; set; }
     }
 }
