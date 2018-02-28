@@ -62,7 +62,7 @@ namespace Application_WEB_MVC.Controllers
 
             foreach(UserValue uv in user_value){
                 uv.Pivot = pivot_to_keep;
-                _context.Add(uv);
+                //_context.Add(uv);
             }
 
             //Get keys to be modified
@@ -71,8 +71,8 @@ namespace Application_WEB_MVC.Controllers
                 .ToList();
 
             foreach(Key k in keys){
-                k.Pivot = pivot_to_keep.pivotId;
-                _context.Add(k);
+                k.Pivot = pivot_to_keep;
+                //_context.Add(k);
             }
             _context.SaveChanges();
             
