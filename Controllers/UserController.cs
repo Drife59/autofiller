@@ -86,15 +86,17 @@ namespace Application_WEB_MVC.Controllers
                 .Where(p => p.name == item.Pivot)
                 .FirstOrDefault();
 
-            //If a value already exist for this pivtos, forbid it
-            var user_value = _context.UserValues
-                .Where(uv => uv.Pivot == pivot)
-                .FirstOrDefault();
-            if( user_value != null){
-                return BadRequest("This pivot already exist for this user");
+            if( pivot != null){
+                //If a value already exist for this pivot, forbid it
+                var user_value_test = _context.UserValues
+                    .Where(uv => uv.Pivot == pivot)
+                    .FirstOrDefault();
+                if( user_value_test != null){
+                    return BadRequest("This pivot already exist for this user");
+                }
             }
 
-            user_value = new UserValue();
+            var user_value = new UserValue();
             user_value.value = item.Value;
             user_value.created_at = DateTime.Now;
             user_value.updated_at = DateTime.Now;
