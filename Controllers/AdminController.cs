@@ -49,6 +49,10 @@ namespace Application_WEB_MVC.Controllers
                 pivot_to_replace = merge.PivotFromWebsite;
             }
 
+            if( pivot_to_replace == null){
+                return BadRequest("Pivot to use for replacement does not exist");
+            }
+
             //Get user value to be modified
             var user_value = _context.UserValues
                 .Where(uv => uv.Pivot == pivot_to_replace)
