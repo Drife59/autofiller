@@ -71,7 +71,7 @@ namespace Application_WEB_MVC.Controllers
                 .ToList();
 
             foreach(Key k in keys){
-                k.Pivot = pivot_to_keep;
+                k.Pivot = pivot_to_keep.pivotId;
                 _context.Add(k);
             }
             _context.SaveChanges();
