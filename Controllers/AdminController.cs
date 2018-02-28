@@ -30,6 +30,8 @@ namespace Application_WEB_MVC.Controllers
 
             var merge = _context.Merges
                 .Where(m => m.mergeId == merge_id)
+                .Include(m => m.PivotFromUser)
+                .Include(m => m.PivotFromWebsite)
                 .FirstOrDefault();
 
             if( merge == null){
