@@ -90,6 +90,7 @@ namespace Application_WEB_MVC.Controllers
                 //If a value already exist for this pivot, forbid it
                 var user_value_test = _context.UserValues
                     .Where(uv => uv.Pivot == pivot)
+                    .Where(uv => uv.User == user)
                     .FirstOrDefault();
                 if( user_value_test != null){
                     return BadRequest("This pivot already exist for this user");
