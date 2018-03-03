@@ -120,6 +120,7 @@ namespace Application_WEB_MVC.Controllers
         }
 
         //Put: set another value for the pivot
+        //Forbid pivot creation
         [HttpPut]
         [Route("{email}/pivot")]        
         public IActionResult Maj_pivot(string email, [FromBody] PivotUserRequest item)
@@ -146,21 +147,19 @@ namespace Application_WEB_MVC.Controllers
                 return BadRequest("This pivot does not exist for anybody. Cannot update it.");
             }
 
+            //Retrieve the value corresponding to the pivot 
             var user_value = _context.UserValues
-                .Where(u => u.value == item.Value)
+                .Where(u => u.Pivot == pivot)
                 .Where(u => u.User == user)
                 .FirstOrDefault();
 
-            //This value did not exist for user, adding it
-            if( user_value == null){
-                user_value = new UserValue();
-                user_value.value = item.Value;
-                user_value.created_at = DateTime.Now;
-                user_value.updated_at = DateTime.Now;
-                user_value.User = user;
+            if(user_value == null){
+                return BadRequest("This pivot does not exist for this user.");
             }
-            //Linking user_value to existing pivot
-            user_value.Pivot = pivot;
+
+            user_value.value = item.Value;
+            user_value.updated_at = DateTime.Now;
+
             _context.SaveChanges();
             return Ok(user_value);
         }
