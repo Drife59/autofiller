@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
+using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,6 +98,38 @@ namespace Application_WEB_MVC.Controllers
             return Ok(website.Keys);
         }
 
+        [HttpGet]
+        [Route("{url_domaine}/pivots_v1")]        
+        public IActionResult Get_cles_v1(string url_domaine)
+        {
+            var website = _context.Websites
+                .Where(w => w.domaine == url_domaine)
+                .FirstOrDefault();
+
+            if(website == null){
+                return NotFound();
+            }
+            
+            var keys = _context.Keys
+                .Where(k => k.Website == website)
+                .Include(k => k.Pivot)
+                .ToList();
+            
+            
+
+            Dictionary<string, string> cle_pivot = new Dictionary<string, string>();
+
+            foreach (var item in keys)
+            {
+                cle_pivot[item.code] = item.Pivot.name; 
+            }
+
+            string json = JsonConvert.SerializeObject(cle_pivot, Formatting.Indented);
+
+            return Ok(json);
+        }
+
+                    
         //Post: création d'un nouveau pivot sur une clée
         [HttpPost]
         [Route("{url_domaine}/pivot")]        

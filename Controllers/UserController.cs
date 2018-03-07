@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +64,35 @@ namespace Application_WEB_MVC.Controllers
                 .Include(u => u.Pivot)
                 .ToList();
             return Ok(user_values);
+        }
+
+        //Return all value as pivot:value Dict for user
+        [HttpGet]
+        [Route("/user/{email}/pivots_v1")]
+        public IActionResult get_pivots_user_v1(string email){
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var user_values = _context.UserValues
+                .Where(u => u.User == user)
+                .Include(u => u.Pivot)
+                .ToList();
+
+            Dictionary<string, string> pivot_value = new Dictionary<string, string>();
+
+            foreach (var item in user_values)
+            {
+                pivot_value[item.Pivot.name] = item.value; 
+            }
+
+            string json = JsonConvert.SerializeObject(pivot_value, Formatting.Indented);
+
+            return Ok(json);
         }
 
         //Post: Create a new value for a user, associated with a pivot
