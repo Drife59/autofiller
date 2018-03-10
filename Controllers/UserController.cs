@@ -62,6 +62,7 @@ namespace Application_WEB_MVC.Controllers
             var user_values = _context.UserValues
                 .Where(u => u.User == user)
                 .Include(u => u.Pivot)
+                .Where(u => u.Pivot.restitution_enabled == true)
                 .ToList();
             return Ok(user_values);
         }
@@ -78,16 +79,30 @@ namespace Application_WEB_MVC.Controllers
                 return StatusCode((int)HttpStatusCode.NotFound);
             }
 
-            var user_values = _context.UserValues
+            //Populate enabled pivots
+            var user_values_enabled = _context.UserValues
                 .Where(u => u.User == user)
                 .Include(u => u.Pivot)
+                .Where(u => u.Pivot.restitution_enabled == true)
                 .ToList();
 
             Dictionary<string, string> pivot_value = new Dictionary<string, string>();
 
-            foreach (var item in user_values)
+            foreach (var item in user_values_enabled)
             {
                 pivot_value[item.Pivot.name] = item.value; 
+            }
+
+            //Populate disabled pivots with blank values
+            var user_values_disabled = _context.UserValues
+                .Where(u => u.User == user)
+                .Include(u => u.Pivot)
+                .Where(u => u.Pivot.restitution_enabled == false)
+                .ToList();
+
+            foreach (var item in user_values_disabled)
+            {
+                pivot_value[item.Pivot.name] = " "; 
             }
 
             string json = JsonConvert.SerializeObject(pivot_value, Formatting.Indented);
@@ -171,7 +186,7 @@ namespace Application_WEB_MVC.Controllers
             }
             
             var pivot = _context.Pivots
-                .Where(p => p.name == item.Pivot) 
+                .Where(p => p.name == item.Pivot)
                 .FirstOrDefault();
 
             if( pivot == null){
