@@ -47,10 +47,32 @@ namespace Application_WEB_MVC.Controllers
             }
         }
 
+        //Return a value associated with a pivot for user
+        [HttpGet]
+        [Route("/user/{email}/pivot/{pivot_name}")]
+        public IActionResult get_value_user(string email, string pivot_name){
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var user_value = _context.UserValues
+                .Where(u => u.User == user)
+                .Include(u => u.Pivot)
+                .Where(u => u.Pivot.restitution_enabled == true)
+                .Where(u => u.Pivot.name == pivot_name)
+                .FirstOrDefault();
+            
+            return Ok(user_value);
+        }
+
         //Return all value for user
         [HttpGet]
         [Route("/user/{email}/pivots")]
-        public IActionResult get_pivots_user(string email){
+        public IActionResult get_values_user(string email){
             var user = _context.Users
                 .Where(u => u.email == email)
                 .FirstOrDefault();
