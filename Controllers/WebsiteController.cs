@@ -81,6 +81,30 @@ namespace Application_WEB_MVC.Controllers
                 return StatusCode((int)HttpStatusCode.Conflict);
             }
         }
+        //return a key for website, if found
+        [HttpGet]
+        [Route("{url_domaine}/key/{key_code}")]        
+        public IActionResult Get_cles(string url_domaine, string key_code)
+        {
+            var website = _context.Websites
+                .Where(w => w.domaine == url_domaine)
+                .FirstOrDefault();
+
+            if(website == null){
+                return NotFound();
+            }
+
+            var key = _context.Keys
+                .Where(k => k.code == key_code)
+                .Include(w => w.Pivot)
+                .FirstOrDefault();
+            
+            if( key == null){
+                return NotFound("Key for website could not be found.");
+            }
+
+            return Ok(key);
+        }
 
         //return all keys for website
         [HttpGet]
