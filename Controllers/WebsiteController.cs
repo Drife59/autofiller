@@ -82,6 +82,7 @@ namespace Application_WEB_MVC.Controllers
             }
         }
 
+        //return all keys for website
         [HttpGet]
         [Route("{url_domaine}/pivots")]        
         public IActionResult Get_cles(string url_domaine)
@@ -98,6 +99,7 @@ namespace Application_WEB_MVC.Controllers
             return Ok(website.Keys);
         }
 
+        //Compatibility method for front v1, return Dict Key:Value<pivot>
         [HttpGet]
         [Route("{url_domaine}/pivots_v1")]        
         public IActionResult Get_cles_v1(string url_domaine)
