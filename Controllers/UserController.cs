@@ -69,6 +69,28 @@ namespace Application_WEB_MVC.Controllers
             return Ok(user_value);
         }
 
+        //Return all pivot associated with a value a for user
+        [HttpGet]
+        [Route("/user/{email}/pivots/{value}")]
+        public IActionResult get_pivots_for_value(string email, string value){
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var values = _context.UserValues
+                .Where(u => u.User == user)
+                .Where(u => u.value == value)
+                .Include(u => u.Pivot)
+                //.Where(u => u.Pivot.restitution_enabled == true)
+                .ToList();
+            
+            return Ok(values);
+        }
+
         //Return all value for user
         [HttpGet]
         [Route("/user/{email}/pivots")]
