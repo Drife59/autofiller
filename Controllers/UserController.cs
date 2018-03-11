@@ -62,10 +62,14 @@ namespace Application_WEB_MVC.Controllers
             var user_value = _context.UserValues
                 .Where(u => u.User == user)
                 .Include(u => u.Pivot)
-                .Where(u => u.Pivot.restitution_enabled == true)
+                //.Where(u => u.Pivot.restitution_enabled == true)
                 .Where(u => u.Pivot.name == pivot_name)
                 .FirstOrDefault();
-            
+
+            if( user_value == null){
+                Console.Write("Pas de user value pour ce pivot");
+                return StatusCode((int)HttpStatusCode.NotFound);
+            }
             return Ok(user_value);
         }
 
