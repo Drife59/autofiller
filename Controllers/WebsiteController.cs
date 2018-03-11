@@ -193,10 +193,11 @@ namespace Application_WEB_MVC.Controllers
                 pivot = new Pivot();
                 pivot.name = item.Pivot;
                 pivot.created_at = DateTime.Now;
+                _context.Add(pivot);
                 _logger.LogInformation("WebsiteController: create for the first time pivot " + pivot.name);
             }
             pivot.updated_at = DateTime.Now;
-            _context.Add(pivot);
+            
 
             key = new Key();
             key.code = item.Cle;
