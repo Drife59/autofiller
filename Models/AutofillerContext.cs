@@ -14,5 +14,12 @@ namespace Autofiller.Models
         public DbSet<UserValue> UserValues { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Merge> Merges { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Pivot>()
+                .HasIndex(p => p.name)
+                .IsUnique(true);
+        }
     }
 }
