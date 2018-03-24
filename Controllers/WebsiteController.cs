@@ -96,6 +96,7 @@ namespace Application_WEB_MVC.Controllers
 
             var key = _context.Keys
                 .Where(k => k.code == key_code)
+                .Where(k => k.Website == website)
                 .Include(w => w.Pivot)
                 .FirstOrDefault();
             
