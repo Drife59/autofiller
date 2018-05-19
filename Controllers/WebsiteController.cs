@@ -254,8 +254,7 @@ namespace Application_WEB_MVC.Controllers
             return Ok(pivot);
         }
 
-        //Delete Domain
-        //TODO(BG): also delete Key
+        //Delete Domain and associated keys
         [HttpDelete("{url_domaine}")]
         public IActionResult Delete(string url_domaine)
         {
@@ -268,6 +267,7 @@ namespace Application_WEB_MVC.Controllers
             }
 
             _context.Websites.Remove(website);
+            _context.Keys.RemoveRange(_context.Keys.Where(k => k.Website == website));
             _context.SaveChanges();
 
             return new NoContentResult();
