@@ -157,7 +157,9 @@ namespace Application_WEB_MVC.Controllers
         }
 
                     
-        //Post: création d'un nouveau pivot sur une clée
+        //Post: Create key and associate pivot.
+        //Create pivot if totally new in DB
+        //Force Key creation, don't allow update
         [HttpPost]
         [Route("{url_domaine}/pivot")]        
         public IActionResult New_pivot(string url_domaine, [FromBody] PivotDomaineRequest item)
@@ -199,7 +201,6 @@ namespace Application_WEB_MVC.Controllers
             }
             pivot.updated_at = DateTime.Now;
             
-
             key = new Key();
             key.code = item.Cle;
             key.Pivot = pivot;
@@ -212,8 +213,9 @@ namespace Application_WEB_MVC.Controllers
             return Ok(key);
         }
 
-        //Put: Update pivot associated to key
-        //return pivot associated
+        // Put: Update pivot associated to key
+        // Fail if key or Pivot does not exist
+        // return pivot associated
         [HttpPut]
         [Route("{url_domaine}/pivot")]        
         public IActionResult Maj_pivot(string url_domaine, [FromBody] PivotDomaineRequest item)
@@ -252,6 +254,8 @@ namespace Application_WEB_MVC.Controllers
             return Ok(pivot);
         }
 
+        //Delete Domain
+        //TODO(BG): also delete Key
         [HttpDelete("{url_domaine}")]
         public IActionResult Delete(string url_domaine)
         {
