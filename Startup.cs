@@ -28,6 +28,9 @@ namespace Application_WEB_MVC
             //Old example 
             //services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
             services.AddMvc();
+
+            //Injection for json config file reading file
+            services.AddSingleton < IConfiguration > (Configuration);  
             
             //Create the DB connection to Azure SQL server
             //var connection = "Server=corailme.database.windows.net;Database=autofiller;User ID=Corail;Password=Nousallonsservirlemonde59;Trusted_Connection=True;ConnectRetryCount=0";
