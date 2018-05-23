@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 using Newtonsoft.Json;
 
@@ -19,10 +20,12 @@ namespace Application_WEB_MVC.Controllers
     public class UserController : Controller
     {
         private readonly AutofillerContext _context;
+        private readonly IConfiguration _iconfiguration;
 
-        public UserController(AutofillerContext context)
+        public UserController(AutofillerContext context, IConfiguration iconfiguration)
         {
             _context = context;
+            _iconfiguration = iconfiguration;
         }
         
         [HttpPost]

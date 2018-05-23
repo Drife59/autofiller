@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,12 @@ namespace Application_WEB_MVC.Controllers
     {
 
         private readonly AutofillerContext _context;
+        private readonly IConfiguration _iconfiguration;
 
-        public AdminController(AutofillerContext context)
+        public AdminController(AutofillerContext context, IConfiguration iconfiguration)
         {
             _context = context;
+            _iconfiguration = iconfiguration;
         }
 
         //Replace a pivot in db TODO
@@ -145,6 +148,15 @@ namespace Application_WEB_MVC.Controllers
         [Route("/admin/merges/{nombre}")]
         public IActionResult pivot_attente(int nombre){
             return Ok(_context.Merges.Take(nombre));
+        }
+
+        //Return values in conf
+        [HttpGet]
+        [Route("/admin/test_conf")]
+
+        public IActionResult test_conf(){
+            var connectionString = _iconfiguration["ConnectionString"];  
+            return Ok(connectionString);
         }
     }
 }

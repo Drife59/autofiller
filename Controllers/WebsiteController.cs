@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
@@ -26,14 +27,17 @@ namespace Application_WEB_MVC.Controllers
     {
 
         private readonly AutofillerContext _context;
+        private readonly IConfiguration _iconfiguration;
         //private readonly IWebsiteRepository _websiteRepository;
         private readonly ILogger _logger;
 
         public WebsiteController(AutofillerContext context, 
                                 //IWebsiteRepository WebsiteRepository,
-                                ILogger<WebsiteController> logger)
+                                ILogger<WebsiteController> logger,
+                                IConfiguration iconfiguration)
         {
             _context = context;
+            _iconfiguration = iconfiguration;
             //_websiteRepository = WebsiteRepository;
             _logger = logger;
         }
