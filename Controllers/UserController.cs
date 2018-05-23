@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
 
@@ -21,11 +22,15 @@ namespace Application_WEB_MVC.Controllers
     {
         private readonly AutofillerContext _context;
         private readonly IConfiguration _iconfiguration;
+        private readonly ILogger _logger;
 
-        public UserController(AutofillerContext context, IConfiguration iconfiguration)
+        public UserController(AutofillerContext context,
+                              ILogger<UserController> logger,
+                              IConfiguration iconfiguration)
         {
             _context = context;
             _iconfiguration = iconfiguration;
+            _logger = logger;
         }
         
         [HttpPost]

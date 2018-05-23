@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 using System;
 using System.Collections.Generic;
@@ -19,11 +20,15 @@ namespace Application_WEB_MVC.Controllers
 
         private readonly AutofillerContext _context;
         private readonly IConfiguration _iconfiguration;
+        private readonly ILogger _logger;
 
-        public AdminController(AutofillerContext context, IConfiguration iconfiguration)
+        public AdminController(AutofillerContext context,
+                               IConfiguration iconfiguration,
+                               ILogger<AdminController> logger)
         {
             _context = context;
             _iconfiguration = iconfiguration;
+            _logger = logger;
         }
 
         //Replace a pivot in db TODO
