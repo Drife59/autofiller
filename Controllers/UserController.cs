@@ -204,7 +204,7 @@ namespace Application_WEB_MVC.Controllers
             user_value.created_at = DateTime.Now;
             user_value.updated_at = DateTime.Now;
             user_value.User = user;
-            user_value.weight = _iconfiguration["weigth_for_creation"];
+            user_value.weight = Convert.ToInt64(_iconfiguration["weigth_for_creation"]);
 
             //If this new pivot does not exist at all in DB, add it
             if( pivot == null){
@@ -268,7 +268,7 @@ namespace Application_WEB_MVC.Controllers
         }
 
         [HttpDelete("{email}")]
-        public IActionResult Delete(string email)
+        public IActionResult DeleteUser(string email)
         {
             var user = _context.Users
                 .Where(u => u.email == email)
@@ -279,6 +279,22 @@ namespace Application_WEB_MVC.Controllers
             }
 
             _context.Users.Remove(user);
+            _context.SaveChanges();
+            return new NoContentResult();
+        }
+
+        [HttpDelete("/value/{user_value_id}")]
+        public IActionResult DeleteUserValue(long user_value_id)
+        {
+            var user_value = _context.UserValues
+                .Where(u => u.userValueId == user_value_id)
+                .FirstOrDefault();
+            
+            if(user_value == null ){
+                return NotFound();
+            }
+
+            _context.UserValues.Remove(user_value);
             _context.SaveChanges();
             return new NoContentResult();
         }
