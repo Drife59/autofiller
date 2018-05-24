@@ -204,6 +204,7 @@ namespace Application_WEB_MVC.Controllers
             user_value.created_at = DateTime.Now;
             user_value.updated_at = DateTime.Now;
             user_value.User = user;
+            user_value.weight = _iconfiguration["weigth_for_creation"];
 
             //If this new pivot does not exist at all in DB, add it
             if( pivot == null){
