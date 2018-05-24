@@ -82,6 +82,7 @@ namespace Autofiller.Models
         public string value { get; set; }
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
+        public long weight { get; set; }
 
         //Foreign Keys
         public virtual Pivot Pivot { get; set; }
