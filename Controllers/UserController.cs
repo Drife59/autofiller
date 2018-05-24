@@ -267,6 +267,21 @@ namespace Application_WEB_MVC.Controllers
             return Ok(user_value);
         }
 
+        //Update weight for user value
+        [HttpPut]
+        [Route("/value/{user_value_id}/poid/{weight}")]
+        public IActionResult update_value_weigth(long user_value_id, long weight)
+        {
+            var user_value = _context.UserValues
+                .Where(u => u.userValueId == user_value_id)
+                .FirstOrDefault();
+
+            user_value.weight = weight;
+            _context.SaveChanges();
+
+            return Ok(user_value);
+        }
+
         [HttpDelete("{email}")]
         public IActionResult DeleteUser(string email)
         {
