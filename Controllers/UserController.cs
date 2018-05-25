@@ -267,6 +267,43 @@ namespace Application_WEB_MVC.Controllers
             return Ok(user_value);
         }
 
+        //Add a new value line for a pivot for a user
+        [HttpPost]
+        [Route("/user/{email}/pivot/{pivot_id}/value/{value_text}")]
+        public IActionResult update_value_weigth(string email, long pivot_id, string value_text)
+        {
+            //Get user then pivot for the line to be added
+            var user = _context.Users
+                .Where(u => u.email == email) 
+                .FirstOrDefault();
+
+            if(user == null){
+                return NotFound();
+            }
+
+            var pivot = _context.Pivots
+                .Where(p => p.pivotId == pivot_id) 
+                .FirstOrDefault();
+
+            if(pivot == null){
+                return NotFound();
+            }
+
+            //Create the new line value for this pivot
+            var user_value = new UserValue();
+            user_value.value = value_text;
+            user_value.created_at = DateTime.Now;
+            user_value.updated_at = DateTime.Now;
+            user_value.User = user;
+            user_value.Pivot = pivot;
+            user_value.weight = Convert.ToDouble(_iconfiguration["weigth_change_adding"]);
+
+            _context.Add(user_value);
+            _context.SaveChanges();
+
+            return Ok(user_value);
+        }
+
         //Update weight for user value
         [HttpPut]
         [Route("/value/{user_value_id}/poid/{weight}")]
