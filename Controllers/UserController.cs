@@ -166,6 +166,66 @@ namespace Application_WEB_MVC.Controllers
             return Ok(json);
         }
 
+        /*Return objects values as 
+            {
+                pivot_id1: [
+                    { uservalue_id, value_text, weigth},
+                    ...
+                    { uservalue_id, value_text, weigth}
+                ],
+                ...
+                pivot_idn: [
+                    { uservalue_id, value_text, weigth},
+                    ...
+                    { uservalue_id, value_text, weigth}
+                ],
+            }
+            Required for multivaluation
+         */
+        [HttpGet]
+        [Route("/user/{email}/pivots_v3")]
+        public IActionResult get_pivots_user_v3(string email){
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var user_values_enabled = _context.UserValues
+                .Where(u => u.User == user)
+                .Include(u => u.Pivot)
+                .Where(u => u.Pivot.restitution_enabled == true)
+                .ToList();
+
+            Dictionary<string, List<Dictionary<string,string>>> pivots_values = 
+                new Dictionary<string, List<Dictionary<string, string>>>();
+
+            foreach (var user_value in user_values_enabled)
+            {
+                Dictionary<string, string> value_in_list = new Dictionary<string, string>();
+                value_in_list["uservalue_id"] = user_value.userValueId.ToString();
+                value_in_list["value_text"]   = user_value.value;
+                value_in_list["weigth"]       = user_value.weight.ToString();
+
+                //Key for main object
+                var pivot_id = user_value.Pivot.pivotId.ToString();
+                
+                if(pivots_values.ContainsKey(pivot_id)){
+                    pivots_values[pivot_id].Add(value_in_list);
+                }
+                //If first time create pivot id key and list
+                else{
+                    pivots_values[pivot_id] = new List<Dictionary<string, string>>();
+                    pivots_values[pivot_id].Add(value_in_list);
+                }
+            }
+
+            string json = JsonConvert.SerializeObject(pivots_values, Formatting.Indented);
+            return Ok(json);
+        }
+
         //Post: Create a new value for a user, associated with a pivot
         [HttpPost]
         [Route("{email}/pivot")]        
