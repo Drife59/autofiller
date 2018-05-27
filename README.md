@@ -17,6 +17,10 @@ back-end pour les interfaces d'applications Autofill.
 
 ## Lancement
 
+Dev:
+```
+dotnet run
+```
 
 ## Renouvellement du certificat
 
@@ -39,5 +43,16 @@ Enfin, une fois le certificat renouvellé, relancer le nginx:
 sudo service nginx start
 ```
 
+## MAJ DB
+
+Commencer par créer les scripts de migration automatiquement:
+```
+dotnet ef migrations add <nom migration>
+```
+Appliquer les scripts:
+```
+dotnet ef -v database update
+```
+L'option "-v" permet de voir ce qui se passe, surtout en cas de pb...
 
 
