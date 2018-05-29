@@ -64,6 +64,7 @@ namespace Application_WEB_MVC.Controllers
                 .FirstOrDefault();
             
             if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
                 return StatusCode((int)HttpStatusCode.NotFound);
             }
 
@@ -75,7 +76,7 @@ namespace Application_WEB_MVC.Controllers
                 .FirstOrDefault();
 
             if( user_value == null){
-                Console.Write("Pas de user value pour ce pivot");
+                _logger.LogWarning("Pas de user value pour ce pivot");
                 return StatusCode((int)HttpStatusCode.NotFound);
             }
             return Ok(user_value);
@@ -90,6 +91,7 @@ namespace Application_WEB_MVC.Controllers
                 .FirstOrDefault();
             
             if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
                 return StatusCode((int)HttpStatusCode.NotFound);
             }
 
@@ -112,6 +114,7 @@ namespace Application_WEB_MVC.Controllers
                 .FirstOrDefault();
             
             if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
                 return StatusCode((int)HttpStatusCode.NotFound);
             }
 
@@ -132,6 +135,7 @@ namespace Application_WEB_MVC.Controllers
                 .FirstOrDefault();
             
             if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
                 return StatusCode((int)HttpStatusCode.NotFound);
             }
 
@@ -190,6 +194,7 @@ namespace Application_WEB_MVC.Controllers
                 .FirstOrDefault();
             
             if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
                 return StatusCode((int)HttpStatusCode.NotFound);
             }
 
@@ -233,14 +238,16 @@ namespace Application_WEB_MVC.Controllers
         {
             if (item == null || item.Pivot == null || item.Value == null)
             {
+                _logger.LogError("You need to give pivot & value for user");
                 return BadRequest("You need to give pivot & value for user");
             }
 
             var user = _context.Users
-                .Where(u => u.email == email) 
+                .Where(u => u.email == email)
                 .FirstOrDefault();
 
             if(user == null){
+                _logger.LogWarning("Cannor find user with email: " + email);
                 return NotFound();
             }
 
@@ -255,6 +262,7 @@ namespace Application_WEB_MVC.Controllers
                     .Where(uv => uv.User == user)
                     .FirstOrDefault();
                 if( user_value_test != null){
+                    _logger.LogError("This pivot already exist for this user");
                     return BadRequest("This pivot already exist for this user");
                 }
             }
@@ -291,6 +299,7 @@ namespace Application_WEB_MVC.Controllers
 
             if (item == null || item.Pivot == null || item.Value == null)
             {
+                _logger.LogError("You need to give pivot & value for user");
                 return BadRequest("You need to give pivot & value for user");
             }
 
@@ -307,6 +316,7 @@ namespace Application_WEB_MVC.Controllers
                 .FirstOrDefault();
 
             if( pivot == null){
+                _logger.LogError("This pivot does not exist for anybody. Cannot update it.");
                 return BadRequest("This pivot does not exist for anybody. Cannot update it.");
             }
 
@@ -317,6 +327,7 @@ namespace Application_WEB_MVC.Controllers
                 .FirstOrDefault();
 
             if(user_value == null){
+                _logger.LogError("This pivot does not exist for this user.");
                 return BadRequest("This pivot does not exist for this user.");
             }
 
@@ -338,6 +349,7 @@ namespace Application_WEB_MVC.Controllers
                 .FirstOrDefault();
 
             if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
                 return NotFound();
             }
 
@@ -346,6 +358,7 @@ namespace Application_WEB_MVC.Controllers
                 .FirstOrDefault();
 
             if(pivot == null){
+                _logger.LogWarning("Cannot find pivot with id: " + pivot_id);
                 return NotFound();
             }
 
@@ -356,7 +369,7 @@ namespace Application_WEB_MVC.Controllers
             user_value.updated_at = DateTime.Now;
             user_value.User = user;
             user_value.Pivot = pivot;
-            user_value.weight = Convert.ToDouble(_iconfiguration["weigth_change_adding"]);
+            user_value.weight = Convert.ToDecimal(_iconfiguration["weigth_change_adding"]);
 
             _context.Add(user_value);
             _context.SaveChanges();
@@ -387,6 +400,7 @@ namespace Application_WEB_MVC.Controllers
                 .FirstOrDefault();
             
             if(user == null ){
+                _logger.LogWarning("Cannot find user with email: " + email);
                 return NotFound();
             }
 
@@ -403,6 +417,7 @@ namespace Application_WEB_MVC.Controllers
                 .FirstOrDefault();
             
             if(user_value == null ){
+                _logger.LogWarning("Cannot find user with id: " + user_value_id);
                 return NotFound();
             }
 
