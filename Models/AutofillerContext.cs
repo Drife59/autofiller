@@ -20,6 +20,10 @@ namespace Autofiller.Models
             modelBuilder.Entity<Pivot>()
                 .HasIndex(p => p.name)
                 .IsUnique(true);
+
+            //Set precision for decimal. Don't work. Don't know why
+            //modelBuilder.Entity<UserValue>().Property(o => o.weight).HasPrecision(8, 4);
+            //base.OnModelCreating(modelBuilder);
         }
     }
 }
