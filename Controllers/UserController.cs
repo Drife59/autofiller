@@ -338,11 +338,8 @@ namespace Application_WEB_MVC.Controllers
             return Ok(user_value);
         }
 
-        //Add a new value line for a pivot for a user
-        [HttpPost]
-        [Route("/user/{email}/pivot/{pivot_id}/value/{value_text}")]
-        public IActionResult update_value_weigth(string email, long pivot_id, string value_text)
-        {
+        //Return User if found, else null
+        private User get_user_by_email(string email){
             //Get user then pivot for the line to be added
             var user = _context.Users
                 .Where(u => u.email == email) 
@@ -350,6 +347,18 @@ namespace Application_WEB_MVC.Controllers
 
             if(user == null){
                 _logger.LogWarning("Cannot find user with email: " + email);
+            }
+            return user;
+        }
+
+        //Add a new value line for a pivot for a user
+        [HttpPost]
+        [Route("/user/{email}/pivot/{pivot_id}/value/{value_text}")]
+        public IActionResult update_value_weigth(string email, long pivot_id, string value_text)
+        {
+            //Get user then pivot for the line to be added
+            var user = get_user_by_email(email);
+            if(user == null){
                 return NotFound();
             }
 
