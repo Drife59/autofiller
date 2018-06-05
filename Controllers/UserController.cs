@@ -215,7 +215,7 @@ namespace Application_WEB_MVC.Controllers
                 value_in_list["weigth"]       = user_value.weight.ToString();
 
                 //Key for main object
-                var pivot_id = user_value.Pivot.pivotId.ToString();
+                var pivot_id = user_value.Pivot.name;
                 
                 if(pivots_values.ContainsKey(pivot_id)){
                     pivots_values[pivot_id].Add(value_in_list);
