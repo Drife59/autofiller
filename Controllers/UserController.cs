@@ -356,8 +356,8 @@ namespace Application_WEB_MVC.Controllers
 
         //Add a new value line for a pivot for a user
         [HttpPost]
-        [Route("/user/{email}/pivot/{pivot_id}/value/{value_text}")]
-        public IActionResult update_value_weigth(string email, long pivot_id, string value_text)
+        [Route("/user/{email}/pivot/{pivot_name}/value/{value_text}")]
+        public IActionResult update_value_weigth(string email, string pivot_name, string value_text)
         {
             //Get user then pivot for the line to be added
             var user = get_user_by_email(email);
@@ -366,11 +366,11 @@ namespace Application_WEB_MVC.Controllers
             }
 
             var pivot = _context.Pivots
-                .Where(p => p.pivotId == pivot_id) 
+                .Where(p => p.name == pivot_name) 
                 .FirstOrDefault();
 
             if(pivot == null){
-                _logger.LogWarning("Cannot find pivot with id: " + pivot_id);
+                _logger.LogWarning("Cannot find pivot with name: " + pivot_name);
                 return NotFound();
             }
 
@@ -381,7 +381,7 @@ namespace Application_WEB_MVC.Controllers
             user_value.updated_at = DateTime.Now;
             user_value.User = user;
             user_value.Pivot = pivot;
-            user_value.weight = Convert.ToDecimal(_iconfiguration["weigth_change_adding"]);
+            user_value.weight = Convert.ToDecimal(_iconfiguration["weigth_for_creation"]);
 
             _context.Add(user_value);
             _context.SaveChanges();
