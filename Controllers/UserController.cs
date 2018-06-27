@@ -172,13 +172,13 @@ namespace Application_WEB_MVC.Controllers
 
         /*Return objects values as 
             {
-                pivot_id1: [
+                pivot_name1: [
                     { uservalue_id, value_text, weigth},
                     ...
                     { uservalue_id, value_text, weigth}
                 ],
                 ...
-                pivot_idn: [
+                pivot_namen: [
                     { uservalue_id, value_text, weigth},
                     ...
                     { uservalue_id, value_text, weigth}
@@ -289,6 +289,9 @@ namespace Application_WEB_MVC.Controllers
             _context.SaveChanges();
             return Ok(user_value);
         }
+
+
+        //FUNCTION BELOW OBSOLETE WITH MULTIVALUATION
 
         //Put: set another value for the pivot
         //Forbid pivot creation
