@@ -32,6 +32,13 @@ namespace Application_WEB_MVC.Controllers
             _iconfiguration = iconfiguration;
             _logger = logger;
         }
+
+
+        /*
+            -------------
+            PURE USER API
+            -------------
+         */
         
         [HttpPost]
         [Route("/user/{email}")]
@@ -41,7 +48,7 @@ namespace Application_WEB_MVC.Controllers
                 .Where(u => u.email == email) 
                 .FirstOrDefault();
 
-            //Only add website if it does not already exist
+            //Only add user if it does not already exist
             if( user == null){
                 User new_user = new User();
                 new_user.email = email;
@@ -55,78 +62,43 @@ namespace Application_WEB_MVC.Controllers
             }
         }
 
-        //Return a value associated with a pivot for user
-        [HttpGet]
-        [Route("/user/{email}/pivot/{pivot_name}")]
-        public IActionResult get_value_user(string email, string pivot_name){
+        [HttpDelete("{email}")]
+        public IActionResult DeleteUser(string email)
+        {
             var user = _context.Users
                 .Where(u => u.email == email)
                 .FirstOrDefault();
             
-            if(user == null){
+            if(user == null ){
                 _logger.LogWarning("Cannot find user with email: " + email);
-                return StatusCode((int)HttpStatusCode.NotFound);
+                return NotFound();
             }
 
-            var user_value = _context.UserValues
-                .Where(u => u.User == user)
-                .Include(u => u.Pivot)
-                //.Where(u => u.Pivot.restitution_enabled == true)
-                .Where(u => u.Pivot.name == pivot_name)
-                .FirstOrDefault();
-
-            if( user_value == null){
-                _logger.LogWarning("Pas de user value pour ce pivot");
-                return StatusCode((int)HttpStatusCode.NotFound);
-            }
-            return Ok(user_value);
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+            return new NoContentResult();
         }
 
-        //Return all pivot associated with a value a for user
-        [HttpGet]
-        [Route("/user/{email}/pivots/{value}")]
-        public IActionResult get_pivots_for_value(string email, string value){
+        //Return User if found, else null
+        private User get_user_by_email(string email){
+            //Get user then pivot for the line to be added
             var user = _context.Users
-                .Where(u => u.email == email)
+                .Where(u => u.email == email) 
                 .FirstOrDefault();
-            
+
             if(user == null){
                 _logger.LogWarning("Cannot find user with email: " + email);
-                return StatusCode((int)HttpStatusCode.NotFound);
             }
-
-            var values = _context.UserValues
-                .Where(u => u.User == user)
-                .Where(u => u.value == value)
-                .Include(u => u.Pivot)
-                //.Where(u => u.Pivot.restitution_enabled == true)
-                .ToList();
-            
-            return Ok(values);
+            return user;
         }
 
-        //Return all value for user
-        [HttpGet]
-        [Route("/user/{email}/pivots")]
-        public IActionResult get_values_user(string email){
-            var user = _context.Users
-                .Where(u => u.email == email)
-                .FirstOrDefault();
-            
-            if(user == null){
-                _logger.LogWarning("Cannot find user with email: " + email);
-                return StatusCode((int)HttpStatusCode.NotFound);
-            }
+        /*
+            -----------------------
+            V1 compatibility method
+            -----------------------
+        */
 
-            var user_values = _context.UserValues
-                .Where(u => u.User == user)
-                .Include(u => u.Pivot)
-                .Where(u => u.Pivot.restitution_enabled == true)
-                .ToList();
-            return Ok(user_values);
-        }
-
-        //Return all value as pivot:value Dict for user
+        //Return all values as pivot:value Dict for user
         [HttpGet]
         [Route("/user/{email}/pivots_v1")]
         public IActionResult get_pivots_user_v1(string email){
@@ -170,6 +142,58 @@ namespace Application_WEB_MVC.Controllers
             return Ok(json);
         }
 
+        /*
+            -----------------
+            User value method
+            -----------------
+         */
+
+        //Return all values associated with corresponding value text, among all pivots for a user
+        //TODO: make dynamic filter on restitution_enabled option
+        [HttpGet]
+        [Route("/user/{email}/values/{value}")]
+        public IActionResult get_all_values_for_text(string email, string value){
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
+                return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var values = _context.UserValues
+                .Where(u => u.User == user)
+                .Where(u => u.value == value)
+                .Include(u => u.Pivot)
+                //.Where(u => u.Pivot.restitution_enabled == true)
+                .ToList();
+            
+            return Ok(values);
+        }
+
+        //Return all values for user
+        [HttpGet]
+        [Route("/user/{email}/values")]
+        public IActionResult get_values_user(string email){
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
+                return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var user_values = _context.UserValues
+                .Where(u => u.User == user)
+                .Include(u => u.Pivot)
+                .Where(u => u.Pivot.restitution_enabled == true)
+                .ToList();
+            return Ok(user_values);
+        }
+
+    
         /*Return objects values as 
             {
                 pivot_name1: [
@@ -184,7 +208,7 @@ namespace Application_WEB_MVC.Controllers
                     { uservalue_id, value_text, weigth}
                 ],
             }
-            Required for multivaluation
+            Required for frond db population.
          */
         [HttpGet]
         [Route("/user/{email}/pivots_v3")]
@@ -232,6 +256,8 @@ namespace Application_WEB_MVC.Controllers
         }
 
         //Post: Create a new value for a user, associated with a pivot
+        //Create new pivot if needed
+        // #OBSOLETE with new multivaluation
         [HttpPost]
         [Route("{email}/pivot")]        
         public IActionResult New_pivot_user(string email, [FromBody] PivotUserRequest item)
@@ -290,74 +316,10 @@ namespace Application_WEB_MVC.Controllers
             return Ok(user_value);
         }
 
-
-        //FUNCTION BELOW OBSOLETE WITH MULTIVALUATION
-
-        //Put: set another value for the pivot
-        //Forbid pivot creation
-        [HttpPut]
-        [Route("{email}/pivot")]        
-        public IActionResult Maj_pivot(string email, [FromBody] PivotUserRequest item)
-        {
-
-            if (item == null || item.Pivot == null || item.Value == null)
-            {
-                _logger.LogError("You need to give pivot & value for user");
-                return BadRequest("You need to give pivot & value for user");
-            }
-
-            var user = _context.Users
-                .Where(u => u.email == email) 
-                .FirstOrDefault();
-
-            if(user == null){
-                return NotFound();
-            }
-            
-            var pivot = _context.Pivots
-                .Where(p => p.name == item.Pivot)
-                .FirstOrDefault();
-
-            if( pivot == null){
-                _logger.LogError("This pivot does not exist for anybody. Cannot update it.");
-                return BadRequest("This pivot does not exist for anybody. Cannot update it.");
-            }
-
-            //Retrieve the value corresponding to the pivot 
-            var user_value = _context.UserValues
-                .Where(u => u.Pivot == pivot)
-                .Where(u => u.User == user)
-                .FirstOrDefault();
-
-            if(user_value == null){
-                _logger.LogError("This pivot does not exist for this user.");
-                return BadRequest("This pivot does not exist for this user.");
-            }
-
-            user_value.value = item.Value;
-            user_value.updated_at = DateTime.Now;
-
-            _context.SaveChanges();
-            return Ok(user_value);
-        }
-
-        //Return User if found, else null
-        private User get_user_by_email(string email){
-            //Get user then pivot for the line to be added
-            var user = _context.Users
-                .Where(u => u.email == email) 
-                .FirstOrDefault();
-
-            if(user == null){
-                _logger.LogWarning("Cannot find user with email: " + email);
-            }
-            return user;
-        }
-
         //Add a new value line for a pivot for a user
         [HttpPost]
         [Route("/user/{email}/pivot/{pivot_name}/value/{value_text}")]
-        public IActionResult update_value_weigth(string email, string pivot_name, string value_text)
+        public IActionResult add_value_for_pivot(string email, string pivot_name, string value_text)
         {
             //Get user then pivot for the line to be added
             var user = get_user_by_email(email);
@@ -402,23 +364,6 @@ namespace Application_WEB_MVC.Controllers
             _context.SaveChanges();
 
             return Ok(user_value);
-        }
-
-        [HttpDelete("{email}")]
-        public IActionResult DeleteUser(string email)
-        {
-            var user = _context.Users
-                .Where(u => u.email == email)
-                .FirstOrDefault();
-            
-            if(user == null ){
-                _logger.LogWarning("Cannot find user with email: " + email);
-                return NotFound();
-            }
-
-            _context.Users.Remove(user);
-            _context.SaveChanges();
-            return new NoContentResult();
         }
 
         [HttpDelete("/value/{user_value_id}")]
