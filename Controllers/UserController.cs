@@ -174,6 +174,8 @@ namespace Application_WEB_MVC.Controllers
 
         //Return all values for user
         //Filter on pivot is optionnal
+        //filter_restitution_enabled is enabled by default, only get pivot with restitution_enabled = true
+        //Set filter = false in query if you want values from disabled pivots
         [HttpGet]
         [Route("/user/{email}/values")]
         public IActionResult get_values_user(string email, string pivot = null, Boolean filter_restitution_enabled = true){
@@ -187,20 +189,31 @@ namespace Application_WEB_MVC.Controllers
                 return StatusCode((int)HttpStatusCode.NotFound);
             }
 
-            var user_values = _context.UserValues
+            if( pivot != null && filter_restitution_enabled == true){
+                return Ok(_context.UserValues
                 .Where(u => u.User == user)
-                .Include(u => u.Pivot);
+                .Include(u => u.Pivot)
+                .Where(u => u.Pivot.name == pivot)
+                .Where(u => u.Pivot.restitution_enabled == true)
+                .ToList());
+            }else if (pivot != null){
+                return Ok(_context.UserValues
+                .Where(u => u.User == user)
+                .Include(u => u.Pivot)
+                .Where(u => u.Pivot.name == pivot)
+                .ToList());
+            }else if(filter_restitution_enabled == true){
+                return Ok(_context.UserValues
+                .Where(u => u.User == user)
+                .Include(u => u.Pivot)
+                .Where(u => u.Pivot.restitution_enabled == true)
+                .ToList());
+            }
 
-            var new_user_value = null;
-            //optionnal filter
-            if( pivot != null){
-                new_user_value = user_values.Where(u => u.Pivot.name == pivot);
-            }
-            if( filter_restitution_enabled == true){
-                new_user_value = user_values.Where(u => u.Pivot.restitution_enabled == true);
-            }
-                
-            return Ok(new_user_values.ToList());
+            return  Ok(_context.UserValues
+                .Where(u => u.User == user)
+                .Include(u => u.Pivot)
+                .ToList());
         }
 
         /*Return objects values as 
