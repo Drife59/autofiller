@@ -173,9 +173,11 @@ namespace Application_WEB_MVC.Controllers
         }
 
         //Return all values for user
+        //Filter on pivot is optionnal
         [HttpGet]
         [Route("/user/{email}/values")]
-        public IActionResult get_values_user(string email){
+        public IActionResult get_values_user(string email, string pivot = null, Boolean filter_restitution_enabled = true){
+
             var user = _context.Users
                 .Where(u => u.email == email)
                 .FirstOrDefault();
@@ -187,13 +189,20 @@ namespace Application_WEB_MVC.Controllers
 
             var user_values = _context.UserValues
                 .Where(u => u.User == user)
-                .Include(u => u.Pivot)
-                .Where(u => u.Pivot.restitution_enabled == true)
-                .ToList();
-            return Ok(user_values);
+                .Include(u => u.Pivot);
+
+            var new_user_value = null;
+            //optionnal filter
+            if( pivot != null){
+                new_user_value = user_values.Where(u => u.Pivot.name == pivot);
+            }
+            if( filter_restitution_enabled == true){
+                new_user_value = user_values.Where(u => u.Pivot.restitution_enabled == true);
+            }
+                
+            return Ok(new_user_values.ToList());
         }
 
-    
         /*Return objects values as 
             {
                 pivot_name1: [
