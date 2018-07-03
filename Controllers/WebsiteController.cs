@@ -114,7 +114,7 @@ namespace Application_WEB_MVC.Controllers
 
         //return all keys for website
         [HttpGet]
-        [Route("{url_domaine}/pivots")]        
+        [Route("{url_domaine}/keys")]        
         public IActionResult Get_cles(string url_domaine)
         {
             var website = _context.Websites
