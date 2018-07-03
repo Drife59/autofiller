@@ -85,6 +85,7 @@ namespace Application_WEB_MVC.Controllers
                 return StatusCode((int)HttpStatusCode.Conflict);
             }
         }
+        
         //return a key for website, if found
         [HttpGet]
         [Route("{url_domaine}/key/{key_code}")]        
@@ -146,8 +147,6 @@ namespace Application_WEB_MVC.Controllers
                 .Include(k => k.Pivot)
                 .ToList();
             
-            
-
             Dictionary<string, string> cle_pivot = new Dictionary<string, string>();
 
             foreach (var item in keys)
@@ -156,7 +155,6 @@ namespace Application_WEB_MVC.Controllers
             }
 
             string json = JsonConvert.SerializeObject(cle_pivot, Formatting.Indented);
-
             return Ok(json);
         }
 

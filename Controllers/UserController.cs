@@ -175,7 +175,7 @@ namespace Application_WEB_MVC.Controllers
         //Return all values for user
         //Filter on pivot is optionnal
         //filter_restitution_enabled is enabled by default, only get pivot with restitution_enabled = true
-        //Set filter = false in query if you want values from disabled pivots
+        //Set filter = false in query if you want values from disabled pivots=
         [HttpGet]
         [Route("/user/{email}/values")]
         public IActionResult get_values_user(string email, string pivot = null, Boolean filter_restitution_enabled = true){
@@ -275,6 +275,35 @@ namespace Application_WEB_MVC.Controllers
 
             string json = JsonConvert.SerializeObject(pivots_values, Formatting.Indented);
             return Ok(json);
+        }
+
+        //Create a pivot if it does not exist
+        [HttpPost]
+        [Route("/pivot/{name}")]        
+        public IActionResult new_pivot(string name)
+        {
+            if (name == null || name == "")
+            {
+                _logger.LogError("Pivot name cannot be null or empty");
+                return BadRequest("Pivot name cannot be null or empty");
+            }
+
+            var pivot = _context.Pivots
+                .Where(p => p.name == name)
+                .FirstOrDefault();
+
+            if( pivot != null){
+                return StatusCode((int)HttpStatusCode.Conflict);
+            }
+
+            //If this new pivot does not exist at all in DB, add it
+            pivot = new Pivot();
+            pivot.name = name;
+            pivot.created_at = DateTime.Now;
+            pivot.updated_at = DateTime.Now;
+            _context.Add(pivot);
+            _context.SaveChanges();
+            return Ok(pivot);
         }
 
         //Post: Create a new value for a user, associated with a pivot
