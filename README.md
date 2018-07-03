@@ -29,6 +29,7 @@ Il est nécessaire de rennouveller le certificat SSL let'sencrypt tout les 3 moi
 Tout d'abord aller sur la machine de production et stopper le nginx.
 Ceci est nécessaire car il faut libérer le port 443.
 ```
+ssh corail@vps476793.ovh.net
 sudo service nginx stop
 ```
 
