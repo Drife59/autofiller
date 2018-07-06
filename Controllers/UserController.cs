@@ -306,67 +306,7 @@ namespace Application_WEB_MVC.Controllers
             return Ok(pivot);
         }
 
-        //Post: Create a new value for a user, associated with a pivot
-        //Create new pivot if needed
-        // #OBSOLETE with new multivaluation
-        [HttpPost]
-        [Route("{email}/pivot")]        
-        public IActionResult New_pivot_user(string email, [FromBody] PivotUserRequest item)
-        {
-            if (item == null || item.Pivot == null || item.Value == null)
-            {
-                _logger.LogError("You need to give pivot & value for user");
-                return BadRequest("You need to give pivot & value for user");
-            }
-
-            var user = _context.Users
-                .Where(u => u.email == email)
-                .FirstOrDefault();
-
-            if(user == null){
-                _logger.LogWarning("Cannor find user with email: " + email);
-                return NotFound();
-            }
-
-            var pivot = _context.Pivots
-                .Where(p => p.name == item.Pivot)
-                .FirstOrDefault();
-
-            if( pivot != null){
-                //If a value already exist for this pivot, forbid it
-                var user_value_test = _context.UserValues
-                    .Where(uv => uv.Pivot == pivot)
-                    .Where(uv => uv.User == user)
-                    .FirstOrDefault();
-                if( user_value_test != null){
-                    _logger.LogError("This pivot already exist for this user");
-                    return BadRequest("This pivot already exist for this user");
-                }
-            }
-
-            var user_value = new UserValue();
-            user_value.value = item.Value;
-            user_value.created_at = DateTime.Now;
-            user_value.updated_at = DateTime.Now;
-            user_value.User = user;
-            user_value.weight = Convert.ToInt64(_iconfiguration["weigth_for_creation"]);
-
-            //If this new pivot does not exist at all in DB, add it
-            if( pivot == null){
-                pivot = new Pivot();
-                pivot.name = item.Pivot;
-                pivot.created_at = DateTime.Now;
-                pivot.updated_at = DateTime.Now;
-                _context.Add(pivot);
-            }
-            //link the new value to existing pivot
-            user_value.Pivot = pivot;
-            
-            _context.Add(user_value);
-            _context.SaveChanges();
-            return Ok(user_value);
-        }
-
+        
         //Add a new value line for a pivot for a user
         [HttpPost]
         [Route("/user/{email}/pivot/{pivot_name}/value/{value_text}")]
