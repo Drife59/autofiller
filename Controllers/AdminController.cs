@@ -82,6 +82,9 @@ namespace Application_WEB_MVC.Controllers
                 k.Pivot = pivot_to_keep;
                 //_context.Add(k);
             }
+
+            merge.treated_at = DateTime.Now;
+            merge.status = Merge.STATUS_VALIDATED;
             _context.SaveChanges();
             
             return Ok("remplacement de " + pivot_to_replace.name + " par " + pivot_to_keep.name);
@@ -143,7 +146,30 @@ namespace Application_WEB_MVC.Controllers
             
             merge.PivotFromWebsite = pivot_remp;
 
+            merge.status = Merge.STATUS_NEW;
+
             _context.Add(merge);
+            _context.SaveChanges(); 
+            return Ok(merge);      
+        }
+
+        //Refuse a merge request, logical deletion
+        [HttpDelete]
+        [Route("/admin/merge/{merge_id}")]
+        public IActionResult refuse_merge(int merge_id){
+            
+            //Load Data from DB to create a "high level" merge request
+            var merge = _context.Merges
+                        .Where(m => m.mergeId == merge_id)
+                        .FirstOrDefault();
+
+            if( merge == null){
+                return NotFound();
+            }
+
+            merge.status = Merge.STATUS_REFUSED;
+            merge.treated_at = DateTime.Now;
+
             _context.SaveChanges(); 
             return Ok(merge);      
         }

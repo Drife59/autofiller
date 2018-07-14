@@ -116,6 +116,11 @@ namespace Autofiller.Models
         public Pivot PivotFromWebsite { get; set; }
         [Required]
         public DateTime created_at { get; set; }
-        public DateTime treated_at { get; set; }
+        public DateTime treated_at { get; set; } 
+        public string status { get; set; }
+
+        public const string STATUS_NEW = "New";
+        public const string STATUS_VALIDATED = "Validated";
+        public const string STATUS_REFUSED = "Refused";
     }
 }
