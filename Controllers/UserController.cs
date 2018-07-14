@@ -375,7 +375,7 @@ namespace Application_WEB_MVC.Controllers
 
         //Update weight for user value
         [HttpPut]
-        [Route("/value/{user_value_id}/poid/{weight}")]
+        [Route("/value/{user_value_id}/weight/{weight}")]
         public IActionResult update_value_weigth(long user_value_id, long weight)
         {
             var user_value = _context.UserValues
