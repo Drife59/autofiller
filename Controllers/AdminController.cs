@@ -33,7 +33,7 @@ namespace Application_WEB_MVC.Controllers
 
         //Replace a pivot in db TODO
         [HttpPost]
-        [Route("/admin/merges/apply/{merge_id}/{pivot_to_keep_id}")]
+        [Route("/admin/merge/apply/{merge_id}/{pivot_to_keep_id}")]
         public IActionResult remplacement_direct(int merge_id, int pivot_to_keep_id){
 
             var merge = _context.Merges
