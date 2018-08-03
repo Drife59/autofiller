@@ -64,6 +64,29 @@ namespace Application_WEB_MVC.Controllers
             PURE USER API
             -------------
          */
+
+        //Allow connection to account
+        // Check if user / pwd couple is good.
+        [HttpGet]
+        [Route("/user/{email}/{password}")]
+        public IActionResult connection_user(string email, string password){
+
+            var user = _context.Users
+                .Where(u => u.email == email) 
+                .FirstOrDefault();
+
+            if( user == null){
+                return NotFound("Cannot find user");
+            }
+
+            var password_hash = ComputeSha256Hash(password);
+
+            if( user.password_hash != password_hash){
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, "Wrong password");
+            }
+
+            return Ok(user);
+        }
         
         [HttpPost]
         [Route("/user/{email}/{password}")]
