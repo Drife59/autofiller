@@ -94,6 +94,7 @@ namespace Autofiller.Models
         public long userId { get; set; }
         [Required]
         public string email { get; set; }
+        public string password_hash { get; set; }
         public string family_name { get; set; }
         public string surname { get; set; }
         public string phone { get; set; }
