@@ -12,6 +12,11 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
+//for hash function
+using System.Text;  
+using System.Security.Cryptography;  
+
+
 using Autofiller.Models;
 
 namespace Application_WEB_MVC.Controllers
@@ -33,6 +38,26 @@ namespace Application_WEB_MVC.Controllers
             _logger = logger;
         }
 
+        //As of now, we only need Hash for password, that is why we put it here
+        //Later on, we should create a package utils
+        static string ComputeSha256Hash(string rawData)  
+        {  
+            // Create a SHA256   
+            using (SHA256 sha256Hash = SHA256.Create())  
+            {  
+                // ComputeHash - returns byte array  
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));  
+  
+                // Convert byte array to a string   
+                StringBuilder builder = new StringBuilder();  
+                for (int i = 0; i < bytes.Length; i++)  
+                {  
+                    builder.Append(bytes[i].ToString("x2"));  
+                }  
+                return builder.ToString();  
+            }  
+        }  
+
 
         /*
             -------------
@@ -41,17 +66,19 @@ namespace Application_WEB_MVC.Controllers
          */
         
         [HttpPost]
-        [Route("/user/{email}")]
-        public IActionResult new_user(string email){
+        [Route("/user/{email}/{password}")]
+        public IActionResult new_user(string email, string password){
 
             var user = _context.Users
                 .Where(u => u.email == email) 
                 .FirstOrDefault();
 
             //Only add user if it does not already exist
+            //Only store hashed password
             if( user == null){
                 User new_user = new User();
                 new_user.email = email;
+                new_user.password_hash = ComputeSha256Hash(password);
                 new_user.created_at = DateTime.Now;
                 new_user.updated_at = DateTime.Now;
                 _context.Add(new_user);
