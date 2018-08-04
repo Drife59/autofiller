@@ -112,6 +112,26 @@ namespace Application_WEB_MVC.Controllers
             }
         }
 
+        //Reset a password
+        [HttpPost]
+        [Route("/password/{email}/{password}")]
+        public IActionResult reset_password(string email, string password){
+
+            var user = _context.Users
+                .Where(u => u.email == email) 
+                .FirstOrDefault();
+
+            if( user == null){
+                return NotFound("Cannot find user");
+            }
+
+            user.password_hash = ComputeSha256Hash(password);
+            _context.SaveChanges();
+            return Ok(user);
+        }
+
+
+
         [HttpDelete("{email}")]
         public IActionResult DeleteUser(string email)
         {
