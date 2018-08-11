@@ -29,6 +29,13 @@ namespace Application_WEB_MVC
             //services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
             services.AddMvc();
 
+	        services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+		    {
+			builder.AllowAnyOrigin()
+			       .AllowAnyMethod()
+			       .AllowAnyHeader();
+		    }));
+
             //Injection for json config file reading file
             services.AddSingleton < IConfiguration > (Configuration);  
             
@@ -41,6 +48,9 @@ namespace Application_WEB_MVC
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            // Enable Cors for Dev
+            app.UseCors("MyPolicy");
+            
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
