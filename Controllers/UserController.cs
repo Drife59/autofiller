@@ -136,6 +136,7 @@ namespace Application_WEB_MVC.Controllers
         {
             var user = _context.Users
                 .Where(u => u.email == email)
+                .Include(u => u.UserValues)
                 .FirstOrDefault();
             
             if(user == null ){
