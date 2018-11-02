@@ -130,9 +130,8 @@ namespace Application_WEB_MVC.Controllers
             return Ok(user);
         }
 
-
-
-        [HttpDelete("{email}")]
+        [HttpDelete]
+        [Route("/user/{email}")]
         public IActionResult DeleteUser(string email)
         {
             var user = _context.Users
