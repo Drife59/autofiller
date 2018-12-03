@@ -159,12 +159,14 @@ namespace Application_WEB_MVC.Controllers
         }
 
                     
-        //Post: Create key and associate pivot.
-        //Create pivot if totally new in DB
+        //Post: Create key and associate pivot reference if present.
+        //Pivot must exist before
         //Force Key creation, don't allow update
+
+        //V5: In progress 
         [HttpPost]
         [Route("{url_domaine}/pivot")]        
-        public IActionResult New_pivot(string url_domaine, [FromBody] PivotDomaineRequest item)
+        public IActionResult New_pivot(string url_domaine, [FromBody] KeyCreationRequest item)
         {
 
             if (item == null)
@@ -189,19 +191,13 @@ namespace Application_WEB_MVC.Controllers
                 return BadRequest("This key already exist for this Website");
             }
 
-            var pivot = _context.Pivots
+            //If pivot reference exist, associate it 
+            var pivot = null;
+            if(item.pivot_reference != "null" && item.pivot_reference != "undefined" && tem.pivot_reference != ""){
+                pivot = _context.Pivots
                 .Where(p => p.name == item.Pivot) 
                 .FirstOrDefault();
-
-            //New pivot in all db, create it
-            if( pivot == null){
-                pivot = new Pivot();
-                pivot.name = item.Pivot;
-                pivot.created_at = DateTime.Now;
-                _context.Add(pivot);
-                _logger.LogInformation("WebsiteController: create for the first time pivot " + pivot.name);
             }
-            pivot.updated_at = DateTime.Now;
             
             key = new Key();
             key.code = item.Cle;
@@ -209,6 +205,27 @@ namespace Application_WEB_MVC.Controllers
             key.created_at = DateTime.Now;
             key.updated_at = DateTime.Now;
             key.Website = website;
+
+            //Set all weight
+            key.first_name        = item.first_name;
+            key.family_name       = item.family_name;
+            key.postal_code       = item.postal_code;
+            key.home_city         = item.home_city;
+            key.cellphone_number  = item.cellphone_number;
+            key.main_email        = item.main_email;
+            key.main_full_address = item.main_full_address;
+            key.day_of_birth      = item.day_of_birth;
+            key.month_of_birth    = item.month_of_birth;
+            key.year_of_birth     = item.year_of_birth;
+
+            key.company         = item.company;
+            key.homephone       = item.homephone;
+            key.cvv             = item.cvv;
+            key.cardexpirymonth = item.cardexpirymonth;
+            key.cardexpiryyear  = item.cardexpiryyear;
+
+            key.full_birthdate = item.full_birthdate;
+
             _context.Add(key);
 
             _context.SaveChanges();
@@ -218,6 +235,9 @@ namespace Application_WEB_MVC.Controllers
         // Put: Update pivot associated to key
         // Fail if key or Pivot does not exist
         // return pivot associated
+
+        //V5: this need to be updated 
+
         [HttpPut]
         [Route("{url_domaine}/pivot")]        
         public IActionResult Maj_pivot(string url_domaine, [FromBody] PivotDomaineRequest item)

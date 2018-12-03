@@ -9,10 +9,29 @@ namespace Autofiller.Models
 {
     /* Object non persisted, only for front app communication in requests */
 
-    public class PivotDomaineRequest
+    public class KeyCreationRequest
     {
         public string Cle { get; set; }
-        public string Pivot { get; set; }
+        public string pivot_reference { get; set; }
+
+        public string first_name { get; set; };
+        public string family_name { get; set; };
+        public string postal_code { get; set; };
+        public string home_city { get; set; };
+        public string cellphone_number { get; set; };
+        public string main_email { get; set; };
+        public string main_full_address { get; set; };
+        public string day_of_birth { get; set; };
+        public string month_of_birth { get; set; };
+        public string year_of_birth { get; set; };
+
+        public string company { get; set; };
+        public string homephone { get; set; };
+        public string cvv { get; set; };
+        public string cardexpirymonth { get; set; };
+        public string cardexpiryyear { get; set; };
+
+        public string full_birthdate { get; set; };
     }
 
     public class PivotUserRequest
@@ -53,8 +72,29 @@ namespace Autofiller.Models
         public DateTime updated_at { get; set; }
         [Required]
         public virtual Website Website { get; set; }
-        [Required]
+        
+        //This can be null
         public virtual Pivot Pivot { get; set; }
+
+        //Define weight pivot
+        public long first_name { get; set; };
+        public long family_name { get; set; };
+        public long postal_code { get; set; };
+        public long home_city { get; set; };
+        public long cellphone_number { get; set; };
+        public long main_email { get; set; };
+        public long main_full_address { get; set; };
+        public long day_of_birth { get; set; };
+        public long month_of_birth { get; set; };
+        public long year_of_birth { get; set; };
+
+        public long company { get; set; };
+        public long homephone { get; set; };
+        public long cvv { get; set; };
+        public long cardexpirymonth { get; set; };
+        public long cardexpiryyear { get; set; };
+
+        public long full_birthdate { get; set; };
     }
 
     public class Pivot
