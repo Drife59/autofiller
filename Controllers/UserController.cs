@@ -163,56 +163,6 @@ namespace Application_WEB_MVC.Controllers
         }
 
         /*
-            -----------------------
-            V1 compatibility method
-            -----------------------
-        */
-
-        //Return all values as pivot:value Dict for user
-        [HttpGet]
-        [Route("/user/{email}/pivots_v1")]
-        public IActionResult get_pivots_user_v1(string email){
-            var user = _context.Users
-                .Where(u => u.email == email)
-                .FirstOrDefault();
-            
-            if(user == null){
-                _logger.LogWarning("Cannot find user with email: " + email);
-                return StatusCode((int)HttpStatusCode.NotFound);
-            }
-
-            //Populate enabled pivots
-            var user_values_enabled = _context.UserValues
-                .Where(u => u.User == user)
-                .Include(u => u.Pivot)
-                .Where(u => u.Pivot.restitution_enabled == true)
-                .ToList();
-
-            Dictionary<string, string> pivot_value = new Dictionary<string, string>();
-
-            foreach (var item in user_values_enabled)
-            {
-                pivot_value[item.Pivot.name] = item.value; 
-            }
-
-            //Populate disabled pivots with blank values
-            var user_values_disabled = _context.UserValues
-                .Where(u => u.User == user)
-                .Include(u => u.Pivot)
-                .Where(u => u.Pivot.restitution_enabled == false)
-                .ToList();
-
-            foreach (var item in user_values_disabled)
-            {
-                pivot_value[item.Pivot.name] = " "; 
-            }
-
-            string json = JsonConvert.SerializeObject(pivot_value, Formatting.Indented);
-
-            return Ok(json);
-        }
-
-        /*
             -----------------
             User value method
             -----------------
@@ -245,7 +195,7 @@ namespace Application_WEB_MVC.Controllers
         //Return all values for user
         //Filter on pivot is optionnal
         //filter_restitution_enabled is enabled by default, only get pivot with restitution_enabled = true
-        //Set filter = false in query if you want values from disabled pivots=
+        //Set filter = false in query if you want values from disabled pivots
         [HttpGet]
         [Route("/user/{email}/values")]
         public IActionResult get_values_user(string email, string pivot = null, Boolean filter_restitution_enabled = true){
@@ -347,66 +297,6 @@ namespace Application_WEB_MVC.Controllers
             return Ok(json);
         }
 
-        //Post: Create a new value for a user, associated with a pivot
-        //Create new pivot if needed
-        // #OBSOLETE with new multivaluation
-        [HttpPost]
-        [Route("{email}/pivot")]        
-        public IActionResult New_pivot_user(string email, [FromBody] PivotUserRequest item)
-        {
-            if (item == null || item.Pivot == null || item.Value == null)
-            {
-                _logger.LogError("You need to give pivot & value for user");
-                return BadRequest("You need to give pivot & value for user");
-            }
-
-            var user = _context.Users
-                .Where(u => u.email == email)
-                .FirstOrDefault();
-
-            if(user == null){
-                _logger.LogWarning("Cannor find user with email: " + email);
-                return NotFound();
-            }
-
-            var pivot = _context.Pivots
-                .Where(p => p.name == item.Pivot)
-                .FirstOrDefault();
-
-            if( pivot != null){
-                //If a value already exist for this pivot, forbid it
-                var user_value_test = _context.UserValues
-                    .Where(uv => uv.Pivot == pivot)
-                    .Where(uv => uv.User == user)
-                    .FirstOrDefault();
-                if( user_value_test != null){
-                    _logger.LogError("This pivot already exist for this user");
-                    return BadRequest("This pivot already exist for this user");
-                }
-            }
-
-            var user_value = new UserValue();
-            user_value.value = item.Value;
-            user_value.created_at = DateTime.Now;
-            user_value.updated_at = DateTime.Now;
-            user_value.User = user;
-            user_value.weight = Convert.ToInt64(_iconfiguration["weigth_for_creation"]);
-
-            //If this new pivot does not exist at all in DB, add it
-            if( pivot == null){
-                pivot = new Pivot();
-                pivot.name = item.Pivot;
-                pivot.created_at = DateTime.Now;
-                pivot.updated_at = DateTime.Now;
-                _context.Add(pivot);
-            }
-            //link the new value to existing pivot
-            user_value.Pivot = pivot;
-            
-            _context.Add(user_value);
-            _context.SaveChanges();
-            return Ok(user_value);
-        }
 
         //Add a new value line for a pivot for a user
         [HttpPost]
