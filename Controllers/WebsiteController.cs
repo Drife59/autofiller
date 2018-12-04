@@ -158,6 +158,31 @@ namespace Application_WEB_MVC.Controllers
             return Ok(json);
         }
 
+
+        //Create a new pivot
+        [HttpPost]
+        [Route("/pivot/{name_pivot}")]        
+        public IActionResult createPivot(string namePivot)
+        {
+            var oldPivot = _context.Pivots
+                .Where(p => p.name == namePivot)
+                .FirstOrDefault();
+            
+            //Pivot already exists
+            if(oldPivot != null){
+                return StatusCode((int)HttpStatusCode.Conflict);
+            }
+
+            Pivot newPivot = new Pivot();
+            newPivot.name = namePivot;
+            newPivot.created_at = DateTime.Now;
+            newPivot.updated_at = DateTime.Now;
+            _context.Add(newPivot);
+            _context.SaveChanges();
+
+            return Ok(new_user);
+        }
+
                     
         //Post: Create key and associate pivot reference if present.
         //Pivot must exist before
@@ -165,8 +190,8 @@ namespace Application_WEB_MVC.Controllers
 
         //V5: In progress 
         [HttpPost]
-        [Route("{url_domaine}/pivot")]        
-        public IActionResult New_pivot(string url_domaine, [FromBody] KeyCreationRequest item)
+        [Route("{url_domaine}/key")]        
+        public IActionResult createKey(string url_domaine, [FromBody] KeyCreationRequest item)
         {
 
             if (item == null)
@@ -239,8 +264,8 @@ namespace Application_WEB_MVC.Controllers
         //V5: this need to be updated 
 
         [HttpPut]
-        [Route("{url_domaine}/pivot")]        
-        public IActionResult Maj_pivot(string url_domaine, [FromBody] PivotDomaineRequest item)
+        [Route("{url_domaine}/key")]        
+        public IActionResult updateKey(string url_domaine, [FromBody] PivotDomaineRequest item)
         {
 
             var website = _context.Websites
