@@ -191,7 +191,7 @@ namespace Application_WEB_MVC.Controllers
         //V5: In progress 
         [HttpPost]
         [Route("{url_domaine}/key")]        
-        public IActionResult createKey(string url_domaine, [FromBody] KeyCreationRequest item)
+        public IActionResult createKey(string url_domaine, [FromBody] KeyRequest item)
         {
 
             if (item == null)
@@ -265,7 +265,7 @@ namespace Application_WEB_MVC.Controllers
 
         [HttpPut]
         [Route("{url_domaine}/key")]        
-        public IActionResult updateKey(string url_domaine, [FromBody] PivotDomaineRequest item)
+        public IActionResult updateKey(string url_domaine, [FromBody] KeyRequest item)
         {
 
             var website = _context.Websites

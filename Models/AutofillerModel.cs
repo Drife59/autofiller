@@ -9,7 +9,7 @@ namespace Autofiller.Models
 {
     /* Object non persisted, only for front app communication in requests */
 
-    public class KeyCreationRequest
+    public class KeyRequest
     {
         public string Cle { get; set; }
         public string pivot_reference { get; set; }
