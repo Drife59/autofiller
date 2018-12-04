@@ -233,12 +233,8 @@ namespace Application_WEB_MVC.Controllers
             return Ok(key);
         }
 
-        // Put: Update pivot associated to key
-        // Fail if key or Pivot does not exist
-        // return pivot associated
 
-        //V5: this need to be updated 
-
+        //Update Key
         [HttpPut]
         [Route("{url_domaine}/key")]        
         public IActionResult updateKey(string url_domaine, [FromBody] KeyRequest item)
@@ -267,14 +263,33 @@ namespace Application_WEB_MVC.Controllers
                 .Where(p => p.name == item.pivot_reference)
                 .FirstOrDefault();
 
-            //it must exist, his value must have been retrieved
-            if(pivot == null ){
-                return BadRequest("Pivot does not exist");
-            }
 
             key.Pivot = pivot;
+            key.updated_at = DateTime.Now;
+
+            //Update all weight
+            key.first_name        = Int32.Parse(item.first_name);
+            key.family_name       = Int32.Parse(item.family_name);
+            key.postal_code       = Int32.Parse(item.postal_code);
+            key.home_city         = Int32.Parse(item.home_city);
+            key.cellphone_number  = Int32.Parse(item.cellphone_number);
+            key.main_email        = Int32.Parse(item.main_email);
+            key.main_full_address = Int32.Parse(item.main_full_address);
+            key.day_of_birth      = Int32.Parse(item.day_of_birth);
+            key.month_of_birth    = Int32.Parse(item.month_of_birth);
+            key.year_of_birth     = Int32.Parse(item.year_of_birth);
+
+            key.company         = Int32.Parse(item.company);
+            key.homephone       = Int32.Parse(item.homephone);
+            key.cvv             = Int32.Parse(item.cvv);
+            key.cardexpirymonth = Int32.Parse(item.cardexpirymonth);
+            key.cardexpiryyear  = Int32.Parse(item.cardexpiryyear);
+
+            key.full_birthdate = Int32.Parse(item.full_birthdate);
+
+            _context.Add(key);
             _context.SaveChanges();
-            return Ok(pivot);
+            return Ok(key);
         }
 
         //Delete Domain and associated keys
