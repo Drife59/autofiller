@@ -158,37 +158,10 @@ namespace Application_WEB_MVC.Controllers
             return Ok(json);
         }
 
-
-        //Create a new pivot
-        [HttpPost]
-        [Route("/pivot/{name_pivot}")]        
-        public IActionResult createPivot(string namePivot)
-        {
-            var oldPivot = _context.Pivots
-                .Where(p => p.name == namePivot)
-                .FirstOrDefault();
-            
-            //Pivot already exists
-            if(oldPivot != null){
-                return StatusCode((int)HttpStatusCode.Conflict);
-            }
-
-            Pivot newPivot = new Pivot();
-            newPivot.name = namePivot;
-            newPivot.created_at = DateTime.Now;
-            newPivot.updated_at = DateTime.Now;
-            _context.Add(newPivot);
-            _context.SaveChanges();
-
-            return Ok(new_user);
-        }
-
-                    
+                          
         //Post: Create key and associate pivot reference if present.
         //Pivot must exist before
         //Force Key creation, don't allow update
-
-        //V5: In progress 
         [HttpPost]
         [Route("{url_domaine}/key")]        
         public IActionResult createKey(string url_domaine, [FromBody] KeyRequest item)
@@ -216,40 +189,43 @@ namespace Application_WEB_MVC.Controllers
                 return BadRequest("This key already exist for this Website");
             }
 
-            //If pivot reference exist, associate it 
-            var pivot = null;
-            if(item.pivot_reference != "null" && item.pivot_reference != "undefined" && tem.pivot_reference != ""){
-                pivot = _context.Pivots
-                .Where(p => p.name == item.Pivot) 
+            key = new Key();
+            //If pivot reference exist, associate it
+            if(item.pivot_reference != "null" && item.pivot_reference != "undefined" && item.pivot_reference != ""){
+                var pivot = _context.Pivots
+                .Where(p => p.name == item.pivot_reference) 
                 .FirstOrDefault();
+                key.Pivot = pivot;
+            }
+            //No pivot reference
+            else{
+                key.Pivot = null;
             }
             
-            key = new Key();
             key.code = item.Cle;
-            key.Pivot = pivot;
             key.created_at = DateTime.Now;
             key.updated_at = DateTime.Now;
             key.Website = website;
 
             //Set all weight
-            key.first_name        = item.first_name;
-            key.family_name       = item.family_name;
-            key.postal_code       = item.postal_code;
-            key.home_city         = item.home_city;
-            key.cellphone_number  = item.cellphone_number;
-            key.main_email        = item.main_email;
-            key.main_full_address = item.main_full_address;
-            key.day_of_birth      = item.day_of_birth;
-            key.month_of_birth    = item.month_of_birth;
-            key.year_of_birth     = item.year_of_birth;
+            key.first_name        = Int32.Parse(item.first_name);
+            key.family_name       = Int32.Parse(item.family_name);
+            key.postal_code       = Int32.Parse(item.postal_code);
+            key.home_city         = Int32.Parse(item.home_city);
+            key.cellphone_number  = Int32.Parse(item.cellphone_number);
+            key.main_email        = Int32.Parse(item.main_email);
+            key.main_full_address = Int32.Parse(item.main_full_address);
+            key.day_of_birth      = Int32.Parse(item.day_of_birth);
+            key.month_of_birth    = Int32.Parse(item.month_of_birth);
+            key.year_of_birth     = Int32.Parse(item.year_of_birth);
 
-            key.company         = item.company;
-            key.homephone       = item.homephone;
-            key.cvv             = item.cvv;
-            key.cardexpirymonth = item.cardexpirymonth;
-            key.cardexpiryyear  = item.cardexpiryyear;
+            key.company         = Int32.Parse(item.company);
+            key.homephone       = Int32.Parse(item.homephone);
+            key.cvv             = Int32.Parse(item.cvv);
+            key.cardexpirymonth = Int32.Parse(item.cardexpirymonth);
+            key.cardexpiryyear  = Int32.Parse(item.cardexpiryyear);
 
-            key.full_birthdate = item.full_birthdate;
+            key.full_birthdate = Int32.Parse(item.full_birthdate);
 
             _context.Add(key);
 
@@ -288,7 +264,7 @@ namespace Application_WEB_MVC.Controllers
 
             //Get pivot we want to set on Key
             var pivot = _context.Pivots
-                .Where(p => p.name == item.Pivot)
+                .Where(p => p.name == item.pivot_reference)
                 .FirstOrDefault();
 
             //it must exist, his value must have been retrieved

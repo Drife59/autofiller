@@ -77,24 +77,24 @@ namespace Autofiller.Models
         public virtual Pivot Pivot { get; set; }
 
         //Define weight pivot
-        public long first_name { get; set; }
-        public long family_name { get; set; }
-        public long postal_code { get; set; }
-        public long home_city { get; set; }
-        public long cellphone_number { get; set; }
-        public long main_email { get; set; }
-        public long main_full_address { get; set; }
-        public long day_of_birth { get; set; }
-        public long month_of_birth { get; set; }
-        public long year_of_birth { get; set; }
+        public int first_name { get; set; }
+        public int family_name { get; set; }
+        public int postal_code { get; set; }
+        public int home_city { get; set; }
+        public int cellphone_number { get; set; }
+        public int main_email { get; set; }
+        public int main_full_address { get; set; }
+        public int day_of_birth { get; set; }
+        public int month_of_birth { get; set; }
+        public int year_of_birth { get; set; }
 
-        public long company { get; set; }
-        public long homephone { get; set; }
-        public long cvv { get; set; }
-        public long cardexpirymonth { get; set; }
-        public long cardexpiryyear { get; set; }
+        public int company { get; set; }
+        public int homephone { get; set; }
+        public int cvv { get; set; }
+        public int cardexpirymonth { get; set; }
+        public int cardexpiryyear { get; set; }
 
-        public long full_birthdate { get; set; }
+        public int full_birthdate { get; set; }
     }
 
     public class Pivot
