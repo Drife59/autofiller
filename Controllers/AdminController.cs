@@ -56,6 +56,27 @@ namespace Application_WEB_MVC.Controllers
             return Ok(newPivot);
         }
 
+        //Init all pivots for system
+        [HttpPost]
+        [Route("/admin/pivot/init")]        
+        public IActionResult initPivot(string namePivot)
+        {
+            var pivots = configuration["pivots"];
+
+            for(var pivot_name in pivots){
+                Pivot newPivot = new Pivot();
+                newPivot.name = pivot_name;
+                newPivot.created_at = DateTime.Now;
+                newPivot.updated_at = DateTime.Now;
+                _context.Add(newPivot);
+                _context.SaveChanges();
+            }
+            _context.Add(newPivot);
+            _context.SaveChanges();
+
+            return Ok(newPivot);
+        }
+
         //Return values in conf
         [HttpGet]
         [Route("/admin/test_conf")]
