@@ -61,20 +61,21 @@ namespace Application_WEB_MVC.Controllers
         [Route("/admin/pivot/init")]        
         public IActionResult initPivot(string namePivot)
         {
-            var pivots = configuration["pivots"];
+            //Get all pivot from config file
+            var pivots = _iconfiguration.GetSection("pivots").Get<List<String>>();
+            _logger.LogWarning(pivots.GetType().ToString());
 
-            for(var pivot_name in pivots){
+            foreach(var pivot_name in pivots){
+                _logger.LogInformation("Creating pivot: " + pivot_name);
                 Pivot newPivot = new Pivot();
                 newPivot.name = pivot_name;
                 newPivot.created_at = DateTime.Now;
                 newPivot.updated_at = DateTime.Now;
                 _context.Add(newPivot);
-                _context.SaveChanges();
             }
-            _context.Add(newPivot);
-            _context.SaveChanges();
+            //_context.SaveChanges();
 
-            return Ok(newPivot);
+            return Ok();
         }
 
         //Return values in conf
