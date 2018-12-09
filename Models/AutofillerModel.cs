@@ -11,7 +11,7 @@ namespace Autofiller.Models
 
     public class KeyRequest
     {
-        public string Cle { get; set; }
+        public string cle { get; set; }
         public string pivot_reference { get; set; }
 
         public string first_name { get; set; }

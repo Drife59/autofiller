@@ -181,7 +181,7 @@ namespace Application_WEB_MVC.Controllers
             }
 
             var key = _context.Keys
-                .Where(k => k.code == item.Cle)
+                .Where(k => k.code == item.cle)
                 .Where(k => k.Website == website)
                 .FirstOrDefault();
             
@@ -202,7 +202,7 @@ namespace Application_WEB_MVC.Controllers
                 key.Pivot = null;
             }
             
-            key.code = item.Cle;
+            key.code = item.cle;
             key.created_at = DateTime.Now;
             key.updated_at = DateTime.Now;
             key.Website = website;
@@ -251,20 +251,25 @@ namespace Application_WEB_MVC.Controllers
             //Key must exist, we are in PUT method
             var key = _context.Keys
                 .Where(k => k.Website == website)
-                .Where(k => k.code == item.Cle)
+                .Where(k => k.code == item.cle)
                 .FirstOrDefault();
 
             if(key == null ){
                 return BadRequest("Key does not exist");
             }
 
-            //Get pivot we want to set on Key
-            var pivot = _context.Pivots
-                .Where(p => p.name == item.pivot_reference)
+            //If pivot reference exist, associate it
+            if(item.pivot_reference != "null" && item.pivot_reference != "undefined" && item.pivot_reference != ""){
+                var pivot = _context.Pivots
+                .Where(p => p.name == item.pivot_reference) 
                 .FirstOrDefault();
+                key.Pivot = pivot;
+            }
+            //No pivot reference
+            else{
+                key.Pivot = null;
+            }
 
-
-            key.Pivot = pivot;
             key.updated_at = DateTime.Now;
 
             //Update all weight
@@ -287,7 +292,7 @@ namespace Application_WEB_MVC.Controllers
 
             key.full_birthdate = Int32.Parse(item.full_birthdate);
 
-            _context.Add(key);
+            //_context.Add(key);
             _context.SaveChanges();
             return Ok(key);
         }
