@@ -34,20 +34,6 @@ namespace Autofiller.Models
         public string full_birthdate { get; set; }
     }
 
-    public class PivotUserRequest
-    {
-        public string Pivot { get; set; }
-        public string Value { get; set; }
-    }
-
-    public class MergeRequest
-    {
-        public string email { get; set; }
-        public string domaine { get; set; }
-        public string cle_req { get; set; }
-        public string valeur { get; set; }
-    }
-
     /* Object persisted, main DB */
 
     public class Website
@@ -146,22 +132,5 @@ namespace Autofiller.Models
         [JsonIgnore] 
         [IgnoreDataMember]
         public virtual ICollection<UserValue> UserValues { get; set; }
-    }
-
-    public class Merge
-    {
-        public long mergeId { get; set; }
-        public User User { get; set; }
-        public Website Website { get; set; }
-        public Pivot PivotFromUser { get; set; }
-        public Pivot PivotFromWebsite { get; set; }
-        [Required]
-        public DateTime created_at { get; set; }
-        public DateTime treated_at { get; set; } 
-        public string status { get; set; }
-
-        public const string STATUS_NEW = "New";
-        public const string STATUS_VALIDATED = "Validated";
-        public const string STATUS_REFUSED = "Refused";
     }
 }
