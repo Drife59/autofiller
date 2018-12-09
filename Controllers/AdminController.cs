@@ -71,9 +71,10 @@ namespace Application_WEB_MVC.Controllers
                 newPivot.name = pivot_name;
                 newPivot.created_at = DateTime.Now;
                 newPivot.updated_at = DateTime.Now;
+                newPivot.restitution_enabled = true;
                 _context.Add(newPivot);
             }
-            //_context.SaveChanges();
+            _context.SaveChanges();
 
             return Ok();
         }
