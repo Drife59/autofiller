@@ -112,7 +112,7 @@ namespace Application_WEB_MVC.Controllers
             return Ok(key);
         }
 
-        //return all keys for website
+        //V5 return all keys for website
         [HttpGet]
         [Route("{url_domaine}/keys")]        
         public IActionResult Get_cles(string url_domaine)
@@ -128,36 +128,6 @@ namespace Application_WEB_MVC.Controllers
             }
             return Ok(website.Keys);
         }
-
-        //Compatibility method for front v1, return Dict Key:Value<pivot>
-        [HttpGet]
-        [Route("{url_domaine}/pivots_v1")]        
-        public IActionResult Get_cles_v1(string url_domaine)
-        {
-            var website = _context.Websites
-                .Where(w => w.domaine == url_domaine)
-                .FirstOrDefault();
-
-            if(website == null){
-                return NotFound();
-            }
-            
-            var keys = _context.Keys
-                .Where(k => k.Website == website)
-                .Include(k => k.Pivot)
-                .ToList();
-            
-            Dictionary<string, string> cle_pivot = new Dictionary<string, string>();
-
-            foreach (var item in keys)
-            {
-                cle_pivot[item.code] = item.Pivot.name; 
-            }
-
-            string json = JsonConvert.SerializeObject(cle_pivot, Formatting.Indented);
-            return Ok(json);
-        }
-
                           
         //Post: Create key and associate pivot reference if present.
         //Pivot must exist before
