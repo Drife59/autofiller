@@ -253,7 +253,7 @@ namespace Application_WEB_MVC.Controllers
             key.main_full_address = Int32.Parse(item.main_full_address);
             key.day_of_birth      = Int32.Parse(item.day_of_birth);
             key.month_of_birth    = Int32.Parse(item.month_of_birth);
-            key.year_of_birth     = Int32.Parse(item.year_of_            //_context.Add(key);birth);
+            key.year_of_birth     = Int32.Parse(item.year_of_birth);
 
             key.company         = Int32.Parse(item.company);
             key.homephone       = Int32.Parse(item.homephone);
