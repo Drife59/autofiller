@@ -262,7 +262,7 @@ namespace Application_WEB_MVC.Controllers
 
             key.full_birthdate = Int32.Parse(item.full_birthdate);
 
-            //_context.Add(key);
+
             _context.SaveChanges();
             return Ok(key);
         }
