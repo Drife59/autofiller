@@ -139,7 +139,7 @@ namespace Application_WEB_MVC.Controllers
 
             if (item == null)
             {
-                return BadRequest();
+                return BadRequest("Key was not in body request.");
             }
 
             var website = _context.Websites
@@ -225,7 +225,7 @@ namespace Application_WEB_MVC.Controllers
                 .FirstOrDefault();
 
             if(key == null ){
-                return BadRequest("Key does not exist");
+                return NotFound();
             }
 
             //If pivot reference exist, associate it
