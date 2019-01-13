@@ -121,11 +121,6 @@ namespace Autofiller.Models
         [Required]
         public string email { get; set; }
         public string password_hash { get; set; }
-        public string family_name { get; set; }
-        public string surname { get; set; }
-        public string phone { get; set; }
-        public string postal_code { get; set; }
-        public string city { get; set; }
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
 
