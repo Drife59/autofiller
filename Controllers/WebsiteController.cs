@@ -191,10 +191,10 @@ namespace Application_WEB_MVC.Controllers
 
             key.company         = Int32.Parse(item.company);
             key.homephone       = Int32.Parse(item.homephone);
-            key.cvv             = Int32.Parse(item.cvv);
+            /*key.cvv             = Int32.Parse(item.cvv);
             key.cardexpirymonth = Int32.Parse(item.cardexpirymonth);
             key.cardexpiryyear  = Int32.Parse(item.cardexpiryyear);
-
+            */
             key.full_birthdate = Int32.Parse(item.full_birthdate);
 
             _context.Add(key);
@@ -256,10 +256,10 @@ namespace Application_WEB_MVC.Controllers
 
             key.company         = Int32.Parse(item.company);
             key.homephone       = Int32.Parse(item.homephone);
-            key.cvv             = Int32.Parse(item.cvv);
+            /* key.cvv             = Int32.Parse(item.cvv);
             key.cardexpirymonth = Int32.Parse(item.cardexpirymonth);
             key.cardexpiryyear  = Int32.Parse(item.cardexpiryyear);
-
+            */
             key.full_birthdate = Int32.Parse(item.full_birthdate);
 
 
