@@ -13,6 +13,7 @@ namespace Autofiller.Models
         public DbSet<Pivot> Pivots { get; set; }
         public DbSet<UserValue> UserValues { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Profil> Profils { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

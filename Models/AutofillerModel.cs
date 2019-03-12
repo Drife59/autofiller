@@ -128,4 +128,20 @@ namespace Autofiller.Models
         [IgnoreDataMember]
         public virtual ICollection<UserValue> UserValues { get; set; }
     }
+
+    public class Profil
+    {
+        public long profilId { get; set; }
+        public string profilName { get; set; }
+
+        //Foreign Keys
+        public virtual User User { get; set; }
+        [Required]
+        public DateTime created_at { get; set; }
+        public DateTime updated_at { get; set; }
+
+        [JsonIgnore] 
+        [IgnoreDataMember]
+        public virtual ICollection<UserValue> UserValues { get; set; }
+    }
 }
