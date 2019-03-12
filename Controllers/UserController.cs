@@ -364,5 +364,79 @@ namespace Application_WEB_MVC.Controllers
             _context.SaveChanges();
             return new NoContentResult();
         }
+
+        /*
+            --------------
+            Profil method
+            --------------
+        */
+
+        //Create a new profile
+        [HttpPost]
+        [Route("/user/{email}/profil/{profilName}")]
+        public IActionResult new_profil(string email, string profilName){
+
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
+                return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var profil = _context.Profils
+                .Where(u => u.profilName == profilName) 
+                .FirstOrDefault();
+
+            //Only add profil if it does not already exist
+            if( profil == null){
+                Profil new_profil = new Profil();
+                new_profil.User = user;
+                new_profil.profilName = profilName;
+                new_profil.created_at = DateTime.Now;
+                new_profil.updated_at = DateTime.Now;
+                _context.Add(new_profil);
+                _context.SaveChanges();              
+                return Ok(new_profil);
+            }else{
+                return StatusCode((int)HttpStatusCode.Conflict, "A profil with name " + profilName + " already exist");
+            }
+        }
+
+        //Delete a profile
+        [HttpDelete("/user/{email}/profil/{profilId}")]
+        public IActionResult DeleteProfil(string email, long profilId)
+        {
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
+                return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var profil = _context.Profils
+                .Where(p => p.profilId == profilId)
+                .FirstOrDefault();
+            
+            if(profil == null ){
+                _logger.LogWarning("Cannot find profil with id: " + profilId);
+                return NotFound();
+            }
+
+            if(profil.User != user){
+                _logger.LogWarning("Profil " + profilId + " does not belong to user" + email);
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, "You are not allowed to modify this profil");
+            }
+
+            _context.Profils.Remove(profil);
+            _context.SaveChanges();
+            return new NoContentResult();
+        }
+
+        
+
     }
 }
