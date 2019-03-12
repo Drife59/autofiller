@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ocaril", "Application WEB MVC\Ocaril.csproj", "{60561A52-224B-4127-BF57-EE15B602A8B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ocaril", "Ocaril.csproj", "{60561A52-224B-4127-BF57-EE15B602A8B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
