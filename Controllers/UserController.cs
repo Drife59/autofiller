@@ -197,7 +197,7 @@ namespace Application_WEB_MVC.Controllers
         //filter_restitution_enabled is enabled by default, only get pivot with restitution_enabled = true
         //Set filter = false in query if you want values from disabled pivots
         [HttpGet]
-        [Route("/user/{email}/values")]
+        [Route("/user/{email}/values/v3")]
         public IActionResult get_values_user(string email, string pivot = null, Boolean filter_restitution_enabled = true){
 
             var user = _context.Users
@@ -236,7 +236,12 @@ namespace Application_WEB_MVC.Controllers
                 .ToList());
         }
 
-        /*Return objects values as 
+        /*
+        Return values without profil.
+        V5 Legacy method.
+
+        
+        Return objects values as 
             {
                 pivot_name1: [
                     { uservalue_id, value_text, weigth},
@@ -250,7 +255,6 @@ namespace Application_WEB_MVC.Controllers
                     { uservalue_id, value_text, weigth}
                 ],
             }
-            Required for frond db population.
          */
         [HttpGet]
         [Route("/user/{email}/uservalue_profilless")]
@@ -472,7 +476,25 @@ namespace Application_WEB_MVC.Controllers
             return new NoContentResult();
         }
 
-        
+        //Return all values for user bind with a profile.
+        [HttpGet]
+        [Route("/user/{email}/values_with_profil")]
+        public IActionResult get_values_with_profil(string email){
 
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
+                return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            return  Ok(_context.UserValues
+                .Where(v => v.User == user)
+                .Where(v => v.Profil != null)
+                .Include(u => u.Pivot)
+                .ToList());
+        }
     }
 }
