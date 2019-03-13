@@ -440,8 +440,9 @@ namespace Application_WEB_MVC.Controllers
             }
 
             var profils = _context.Profils.ToList();
+            string json = JsonConvert.SerializeObject(profils);
 
-            return Ok(profils);
+            return Ok(json);
         }
 
         //Delete a profile
