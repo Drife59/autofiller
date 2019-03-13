@@ -163,9 +163,9 @@ namespace Application_WEB_MVC.Controllers
         }
 
         /*
-            -----------------
-            User value method
-            -----------------
+            ----------------------------
+            User value method, V5 Legacy
+            ----------------------------
          */
 
         //Return all values associated with corresponding value text, among all pivots for a user
@@ -253,8 +253,8 @@ namespace Application_WEB_MVC.Controllers
             Required for frond db population.
          */
         [HttpGet]
-        [Route("/user/{email}/pivots_v3")]
-        public IActionResult get_pivots_user_v3(string email){
+        [Route("/user/{email}/uservalue_profilless")]
+        public IActionResult get_uservalue_profilless(string email){
             var user = _context.Users
                 .Where(u => u.email == email)
                 .FirstOrDefault();
@@ -266,6 +266,7 @@ namespace Application_WEB_MVC.Controllers
 
             var user_values_enabled = _context.UserValues
                 .Where(u => u.User == user)
+                .Where(u => u.Profil == null)
                 .Include(u => u.Pivot)
                 .Where(u => u.Pivot.restitution_enabled == true)
                 .ToList();
@@ -298,10 +299,11 @@ namespace Application_WEB_MVC.Controllers
         }
 
 
-        //Add a new value line for a pivot for a user
+        //Add a new value line for a pivot for a user, with or without a profil
+        //This function is compatible V5/V6, within an optional parameter profil_id
         [HttpPost]
-        [Route("/user/{email}/pivot/{pivot_name}/value/{value_text}")]
-        public IActionResult add_value_for_pivot(string email, string pivot_name, string value_text)
+        [Route("/user/{email}/pivot/{pivot_name}/value/{value_text}.{profil_id?}")]
+        public IActionResult add_value_for_pivot(string email, string pivot_name, string value_text, int? profil_id)
         {
             //Get user then pivot for the line to be added
             var user = get_user_by_email(email);
@@ -315,12 +317,29 @@ namespace Application_WEB_MVC.Controllers
 
             if(pivot == null){
                 _logger.LogWarning("Cannot find pivot with name: " + pivot_name);
-                return NotFound();
+                return NotFound("Cannot find pivot with name: " + pivot_name);
+            }
+
+            Profil profil = null;
+            //Try to find profil: profil_id was provided
+            if(profil_id != null){
+                _logger.LogInformation("Required adding value for the profil: " + profil_id);
+                profil = _context.Profils
+                .Where(p => p.profilId == profil_id)
+                .FirstOrDefault();
+
+                //We required a profil and did not find it
+                if(profil == null){
+                    return NotFound("Cannot add value: cannot find profil" + profil_id);
+                }
+            }else{
+                _logger.LogInformation("Required adding value without profil.");
             }
 
             //Create the new line value for this pivot
             var user_value = new UserValue();
             user_value.value = value_text;
+            user_value.Profil = profil;
             user_value.created_at = DateTime.Now;
             user_value.updated_at = DateTime.Now;
             user_value.User = user;
@@ -402,6 +421,23 @@ namespace Application_WEB_MVC.Controllers
             }else{
                 return StatusCode((int)HttpStatusCode.Conflict, "A profil with name " + profilName + " already exist");
             }
+        }
+
+        //Get all profil for a user
+        [HttpGet("/user/{email}/profils")]
+        public IActionResult GetProfils(string email){
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
+                return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var profils = _context.Profils.ToList();
+
+            return Ok(profils);
         }
 
         //Delete a profile
