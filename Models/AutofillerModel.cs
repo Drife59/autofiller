@@ -113,6 +113,8 @@ namespace Autofiller.Models
         //Foreign Keys
         public virtual Pivot Pivot { get; set; }
         public virtual User User { get; set; }
+        public virtual Profil Profil { get; set; }
+
     }
 
     public class User
