@@ -494,7 +494,8 @@ namespace Application_WEB_MVC.Controllers
             return  Ok(_context.UserValues
                 .Where(v => v.User == user)
                 .Where(v => v.Profil != null)
-                .Include(u => u.Pivot)
+                .Include(v => v.Profil)
+                .Include(v => v.Pivot)
                 .ToList());
         }
     }
