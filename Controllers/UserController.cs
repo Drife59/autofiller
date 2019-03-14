@@ -419,6 +419,7 @@ namespace Application_WEB_MVC.Controllers
                 new_profil.profilName = profilName;
                 new_profil.created_at = DateTime.Now;
                 new_profil.updated_at = DateTime.Now;
+                new_profil.weight = 1;
                 _context.Add(new_profil);
                 _context.SaveChanges();              
                 return Ok(new_profil);
@@ -441,6 +442,30 @@ namespace Application_WEB_MVC.Controllers
             return Ok(_context.Profils
                         .Where(p => p.User == user)
                         .ToList());
+        }
+
+        //Update a profil weight 
+        [HttpPut("/user/{email}/profil/{profilId}/weight/{weight}")]
+        public IActionResult updateProfilWeight(string email, int profilId, decimal weight){
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
+                return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            //Does not allow to modify a profil if it is not one of the user provided
+            var profil = _context.Profils
+                        .Where(p => p.User == user)
+                        .Where(p => p.profilId == profilId)
+                        .FirstOrDefault();
+
+            profil.weight = weight;
+            _context.SaveChanges();              
+
+            return Ok(profil);
         }
 
         //Delete a profile
