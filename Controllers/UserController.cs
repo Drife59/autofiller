@@ -438,11 +438,9 @@ namespace Application_WEB_MVC.Controllers
                 _logger.LogWarning("Cannot find user with email: " + email);
                 return StatusCode((int)HttpStatusCode.NotFound);
             }
-
-            var profils = _context.Profils.ToList();
-            string json = JsonConvert.SerializeObject(profils);
-
-            return Ok(json);
+            return Ok(_context.Profils
+                        .Where(p => p.User == user)
+                        .ToList());
         }
 
         //Delete a profile
