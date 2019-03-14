@@ -142,6 +142,9 @@ namespace Autofiller.Models
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
 
+        public decimal weight { get; set; }
+
+
         [JsonIgnore] 
         [IgnoreDataMember]
         public virtual ICollection<UserValue> UserValues { get; set; }
