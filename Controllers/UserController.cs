@@ -275,7 +275,10 @@ namespace Application_WEB_MVC.Controllers
                 .Where(u => u.Pivot.restitution_enabled == true)
                 .ToList();
 
-            Dictionary<string, List<Dictionary<string,string>>> pivots_values = 
+            //21/03/2019: Now returning raw text as Chrome 73 does not allow CORS JSON request anymore
+            return Ok(user_values_enabled);
+
+            /* Dictionary<string, List<Dictionary<string,string>>> pivots_values = 
                 new Dictionary<string, List<Dictionary<string, string>>>();
 
             foreach (var user_value in user_values_enabled)
@@ -299,7 +302,9 @@ namespace Application_WEB_MVC.Controllers
             }
 
             string json = JsonConvert.SerializeObject(pivots_values, Formatting.Indented);
+            
             return Ok(json);
+            */
         }
 
 
