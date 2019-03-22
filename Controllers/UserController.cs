@@ -311,8 +311,8 @@ namespace Application_WEB_MVC.Controllers
         //Add a new value line for a pivot for a user, with or without a profil
         //This function is compatible V5/V6, within an optional parameter profil_id
         [HttpPost]
-        [Route("/user/{email}/pivot/{pivot_name}/value/{value_text}.{profil_id?}")]
-        public IActionResult add_value_for_pivot(string email, string pivot_name, string value_text, int? profil_id)
+        [Route("/user/{email}/pivot/{pivot_name}/value/{value_text}/{profil_id?}")]
+        public IActionResult add_value_for_pivot(string email, string pivot_name, string value_text, int profil_id=-1)
         {
             //Get user then pivot for the line to be added
             var user = get_user_by_email(email);
@@ -331,7 +331,8 @@ namespace Application_WEB_MVC.Controllers
 
             Profil profil = null;
             //Try to find profil: profil_id was provided
-            if(profil_id != null){
+
+            if(profil_id != -1){
                 _logger.LogInformation("Required adding value for the profil: " + profil_id);
                 profil = _context.Profils
                 .Where(p => p.profilId == profil_id)
@@ -339,7 +340,7 @@ namespace Application_WEB_MVC.Controllers
 
                 //We required a profil and did not find it
                 if(profil == null){
-                    return NotFound("Cannot add value: cannot find profil" + profil_id);
+                    return NotFound("Cannot add value: cannot find profil " + profil_id);
                 }
             }else{
                 _logger.LogInformation("Required adding value without profil.");
