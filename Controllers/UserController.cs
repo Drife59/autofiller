@@ -459,7 +459,7 @@ namespace Application_WEB_MVC.Controllers
             
             if(user == null){
                 _logger.LogWarning("Cannot find user with email: " + email);
-                return StatusCode((int)HttpStatusCode.NotFound);
+                return StatusCode((int)HttpStatusCode.NotFound, ("Cannot find user with email: " + email));
             }
 
             //Does not allow to modify a profil if it is not one of the user provided
@@ -500,6 +500,13 @@ namespace Application_WEB_MVC.Controllers
                 _logger.LogWarning("Profil " + profilId + " does not belong to user" + email);
                 return StatusCode((int)System.Net.HttpStatusCode.Forbidden, "You are not allowed to modify this profil");
             }
+
+            //First delete related user value
+            var user_values = _context.UserValues
+                .Where(u => u.Profil == profil)
+                .ToList();
+
+            _context.UserValues.RemoveRange(user_values);
 
             _context.Profils.Remove(profil);
             _context.SaveChanges();
