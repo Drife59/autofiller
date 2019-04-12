@@ -371,6 +371,10 @@ namespace Application_WEB_MVC.Controllers
                 .Where(u => u.userValueId == user_value_id)
                 .FirstOrDefault();
 
+            if( user_value == null){
+                return NotFound();
+            }
+
             user_value.weight = weight;
             _context.SaveChanges();
 
