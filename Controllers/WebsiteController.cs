@@ -129,8 +129,7 @@ namespace Application_WEB_MVC.Controllers
             return Ok(website.Keys);
         }
                           
-        //Post: Create key and associate pivot reference if present.
-        //Pivot must exist before
+        //Post: Create key
         //Force Key creation, don't allow update
         [HttpPost]
         [Route("{url_domaine}/key")]        
