@@ -419,10 +419,11 @@ namespace Application_WEB_MVC.Controllers
             }
 
             var profil = _context.Profils
-                .Where(u => u.profilName == profilName) 
+                .Where(p => p.User == user)
+                .Where(p => p.profilName == profilName) 
                 .FirstOrDefault();
 
-            //Only add profil if it does not already exist
+            //Only add profil if it does not already exist for this user
             if( profil == null){
                 Profil new_profil = new Profil();
                 new_profil.User = user;
