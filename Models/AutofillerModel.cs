@@ -32,6 +32,7 @@ namespace Autofiller.Models
         public string cardexpiryyear { get; set; }
 
         public string full_birthdate { get; set; }
+        public string country { get; set; }
     }
 
     /* Object persisted, main DB */
@@ -81,6 +82,7 @@ namespace Autofiller.Models
         public int cardexpiryyear { get; set; }
 
         public int full_birthdate { get; set; }
+        public int country { get; set;}
     }
 
     public class Pivot
