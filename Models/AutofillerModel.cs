@@ -20,6 +20,8 @@ namespace Autofiller.Models
         public string home_city { get; set; }
         public string cellphone_number { get; set; }
         public string main_email { get; set; }
+        public int address { get; set; }
+
         public string main_full_address { get; set; }
         public string day_of_birth { get; set; }
         public string month_of_birth { get; set; }
@@ -70,6 +72,7 @@ namespace Autofiller.Models
         public int home_city { get; set; }
         public int cellphone_number { get; set; }
         public int main_email { get; set; }
+        public int address { get; set; }
         public int main_full_address { get; set; }
         public int day_of_birth { get; set; }
         public int month_of_birth { get; set; }
