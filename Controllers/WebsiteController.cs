@@ -184,6 +184,8 @@ namespace Application_WEB_MVC.Controllers
             key.cellphone_number  = Int32.Parse(item.cellphone_number);
             key.main_email        = Int32.Parse(item.main_email);
             key.main_full_address = Int32.Parse(item.main_full_address);
+            key.address           = Int32.Parse(item.address);
+
             key.day_of_birth      = Int32.Parse(item.day_of_birth);
             key.month_of_birth    = Int32.Parse(item.month_of_birth);
             key.year_of_birth     = Int32.Parse(item.year_of_birth);
@@ -249,6 +251,7 @@ namespace Application_WEB_MVC.Controllers
             key.cellphone_number  = Int32.Parse(item.cellphone_number);
             key.main_email        = Int32.Parse(item.main_email);
             key.main_full_address = Int32.Parse(item.main_full_address);
+            key.address           = Int32.Parse(item.address);
             key.day_of_birth      = Int32.Parse(item.day_of_birth);
             key.month_of_birth    = Int32.Parse(item.month_of_birth);
             key.year_of_birth     = Int32.Parse(item.year_of_birth);
