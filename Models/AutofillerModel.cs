@@ -20,7 +20,7 @@ namespace Autofiller.Models
         public string home_city { get; set; }
         public string cellphone_number { get; set; }
         public string main_email { get; set; }
-        public int address { get; set; }
+        public string address { get; set; }
 
         public string main_full_address { get; set; }
         public string day_of_birth { get; set; }
