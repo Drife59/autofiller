@@ -197,6 +197,8 @@ namespace Application_WEB_MVC.Controllers
             key.cardexpiryyear  = Int32.Parse(item.cardexpiryyear);
             */
             key.full_birthdate = Int32.Parse(item.full_birthdate);
+            key.country        = Int32.Parse(item.country);
+
 
             _context.Add(key);
 
@@ -263,6 +265,7 @@ namespace Application_WEB_MVC.Controllers
             key.cardexpiryyear  = Int32.Parse(item.cardexpiryyear);
             */
             key.full_birthdate = Int32.Parse(item.full_birthdate);
+            key.country        = Int32.Parse(item.country);
 
 
             _context.SaveChanges();
