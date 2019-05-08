@@ -177,12 +177,19 @@ namespace Application_WEB_MVC.Controllers
             key.Website = website;
 
             //Set all weight
+            key.main_email        = Int32.Parse(item.main_email);
+            key.civility          = Int32.Parse(item.civility);
             key.first_name        = Int32.Parse(item.first_name);
             key.family_name       = Int32.Parse(item.family_name);
             key.postal_code       = Int32.Parse(item.postal_code);
             key.home_city         = Int32.Parse(item.home_city);
-            key.cellphone_number  = Int32.Parse(item.cellphone_number);
-            key.main_email        = Int32.Parse(item.main_email);
+            
+            key.indicative              = Int32.Parse(item.indicative);
+            key.cellphone_number        = Int32.Parse(item.cellphone_number);
+            key.short_cellphone_number  = Int32.Parse(item.short_cellphone_number);
+            key.full_cellphone_number   = Int32.Parse(item.full_cellphone_number);
+
+            
             key.main_full_address = Int32.Parse(item.main_full_address);
             key.address           = Int32.Parse(item.address);
 
@@ -246,14 +253,22 @@ namespace Application_WEB_MVC.Controllers
             key.updated_at = DateTime.Now;
 
             //Update all weight
+            key.main_email        = Int32.Parse(item.main_email);
+            key.civility          = Int32.Parse(item.civility);
             key.first_name        = Int32.Parse(item.first_name);
             key.family_name       = Int32.Parse(item.family_name);
-            key.postal_code       = Int32.Parse(item.postal_code);
-            key.home_city         = Int32.Parse(item.home_city);
-            key.cellphone_number  = Int32.Parse(item.cellphone_number);
-            key.main_email        = Int32.Parse(item.main_email);
+            
             key.main_full_address = Int32.Parse(item.main_full_address);
             key.address           = Int32.Parse(item.address);
+            key.postal_code       = Int32.Parse(item.postal_code);
+            key.home_city         = Int32.Parse(item.home_city);
+            
+            key.indicative              = Int32.Parse(item.indicative);
+            key.cellphone_number        = Int32.Parse(item.cellphone_number);
+            key.short_cellphone_number  = Int32.Parse(item.short_cellphone_number);
+            key.full_cellphone_number   = Int32.Parse(item.full_cellphone_number);
+            
+
             key.day_of_birth      = Int32.Parse(item.day_of_birth);
             key.month_of_birth    = Int32.Parse(item.month_of_birth);
             key.year_of_birth     = Int32.Parse(item.year_of_birth);
