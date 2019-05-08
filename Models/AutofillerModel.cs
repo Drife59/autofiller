@@ -14,11 +14,19 @@ namespace Autofiller.Models
         public string cle { get; set; }
         public string pivot_reference { get; set; }
 
+        public string civility { get; set; }
         public string first_name { get; set; }
         public string family_name { get; set; }
+        
         public string postal_code { get; set; }
         public string home_city { get; set; }
+        
+        public string indicative { get; set; }
         public string cellphone_number { get; set; }
+        public string short_cellphone_number { get; set; }
+        public string full_cellphone_number { get; set; }
+
+
         public string main_email { get; set; }
         public string address { get; set; }
 
@@ -66,11 +74,18 @@ namespace Autofiller.Models
         public virtual Pivot Pivot { get; set; }
 
         //Define weight pivot
+
+        public int civility { get; set; }
         public int first_name { get; set; }
         public int family_name { get; set; }
         public int postal_code { get; set; }
         public int home_city { get; set; }
+
+        public int indicative { get; set; }
         public int cellphone_number { get; set; }
+        public int short_cellphone_number { get; set; }
+        public int full_cellphone_number { get; set; }
+
         public int main_email { get; set; }
         public int address { get; set; }
         public int main_full_address { get; set; }
