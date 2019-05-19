@@ -128,15 +128,29 @@ namespace Application_WEB_MVC.Controllers
             key.family_name = 100;
             _context.Add(key);
 
-            // day of birth
+
+            // Note(BG): set up both input text and select for birth date
+
+            // day of birth text
             pivot = _context.Pivots.Where(p => p.name == "day_of_birth").FirstOrDefault();
             key = Utils.createKeyProfil(website, pivot, "day_birth__text");
             key.day_of_birth = 100;
             _context.Add(key);
 
+            // day of birth select
+            key = Utils.createKeyProfil(website, pivot, "day_birth__select");
+            key.day_of_birth = 100;
+            _context.Add(key);
+
+
             // month of birth
             pivot = _context.Pivots.Where(p => p.name == "month_of_birth").FirstOrDefault();
             key = Utils.createKeyProfil(website, pivot, "month_birth__text");
+            key.month_of_birth = 100;
+            _context.Add(key);
+
+            // month of birth select
+            key = Utils.createKeyProfil(website, pivot, "month_birth__select");
             key.month_of_birth = 100;
             _context.Add(key);
 
@@ -145,6 +159,13 @@ namespace Application_WEB_MVC.Controllers
             key = Utils.createKeyProfil(website, pivot, "year_birth__text");
             key.year_of_birth = 100;
             _context.Add(key);
+
+            // year of birth select 
+            key = Utils.createKeyProfil(website, pivot, "year_birth__select");
+            key.year_of_birth = 100;
+            _context.Add(key);
+
+
 
             // indicative
             pivot = _context.Pivots.Where(p => p.name == "indicative").FirstOrDefault();
