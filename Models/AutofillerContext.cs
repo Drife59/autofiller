@@ -14,6 +14,7 @@ namespace Autofiller.Models
         public DbSet<UserValue> UserValues { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Profil> Profils { get; set; }
+        public DbSet<Login> Logins { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

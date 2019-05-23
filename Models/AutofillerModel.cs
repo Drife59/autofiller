@@ -45,6 +45,13 @@ namespace Autofiller.Models
         public string country { get; set; }
     }
 
+    // To manage the login / psd
+    public class LoginRequest
+    {
+        public string login { get; set; }
+        public string password { get; set; }
+    }
+
     /* Object persisted, main DB */
 
     public class Website
@@ -168,5 +175,22 @@ namespace Autofiller.Models
         [JsonIgnore] 
         [IgnoreDataMember]
         public virtual ICollection<UserValue> UserValues { get; set; }
+    }
+
+
+    /* Retain all login / psd for user */
+    public class Login
+    {
+        public long loginId { get; set; }
+        public string login { get; set; }
+        public string password { get; set; }
+
+        //Foreign Keys
+        public virtual User User { get; set; }
+        public virtual Website Website { get; set; }
+
+        [Required]
+        public DateTime created_at { get; set; }
+        public DateTime updated_at { get; set; }
     }
 }

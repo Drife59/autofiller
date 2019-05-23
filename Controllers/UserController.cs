@@ -539,5 +539,90 @@ namespace Application_WEB_MVC.Controllers
                 .Include(v => v.Pivot)
                 .ToList());
         }
+
+        /*
+            ------------
+            login method
+            ------------
+        */
+
+        /* Return all logins associated with domain requested.
+           Note(BG): this will need to be more secure in the future 
+         */
+        [HttpGet]
+        [Route("/user/{email}/login/{domain}")]
+        public IActionResult get_login(string email, string domain){
+
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
+                return NotFound("Cannot find user with email: " + email);
+                //return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var website = _context.Websites
+                .Where(w => w.domaine == domain) 
+                .FirstOrDefault();
+            
+            if(website == null){
+                _logger.LogInformation("Cannot find domain: " + domain);
+                return NotFound("Cannot find domain: " + domain);
+            }
+
+            var logins = _context.Logins
+                .Where(l => l.User == user)
+                .Where(l => l.Website == website)
+                .ToList();
+
+            if(logins.Count == 0){
+                _logger.LogInformation("Cannot find login for email: " + email + " on domain: " + domain);
+                return NotFound("Cannot find login for email: " + email + " on domain: " + domain);
+            }
+            
+            return Ok(logins);
+        }
+
+        /* Return all logins associated with domain requested.
+           Note(BG): this will need to be more secure in the future 
+         */
+        [HttpPost]
+        [Route("/user/{email}/login/{domain}")]
+        public IActionResult add_login(string email, string domain, [FromBody] LoginRequest request){
+
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
+                return NotFound("Cannot find user with email: " + email);
+            }
+
+            var website = _context.Websites
+                .Where(w => w.domaine == domain) 
+                .FirstOrDefault();
+            
+            if(website == null){
+                _logger.LogInformation("Cannot find domain: " + domain);
+                return NotFound("Cannot find domain: " + domain);
+            }
+
+            Login new_login = new Login();
+            new_login.User = user;
+            new_login.Website = website;
+
+            new_login.login = request.login;
+            new_login.password = request.password;
+
+            new_login.created_at = DateTime.Now;
+            new_login.updated_at = DateTime.Now;
+            _context.Add(new_login);
+            _context.SaveChanges();              
+
+            return Ok(new_login);
+        }
     }
 }
