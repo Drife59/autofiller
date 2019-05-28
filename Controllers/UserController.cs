@@ -342,6 +342,22 @@ namespace Application_WEB_MVC.Controllers
                 if(profil == null){
                     return NotFound("Cannot add value: cannot find profil " + profil_id);
                 }
+
+                //We try to create a user value on a profil and pivot which already exist
+                var duplicate_user_value = _context.UserValues
+                    .Where(u => u.Profil == profil)
+                    .Where(u => u.User == user)
+                    .Where(u => u.Pivot == pivot)
+                    .FirstOrDefault();
+
+                if(duplicate_user_value != null){
+                    var msg = "Requested creating a user value for user " + 
+                        user + " on profil " + profil_id + " for pivot " + pivot;
+                    msg += "\nThis user values already exist, with id/value: " + duplicate_user_value.userValueId 
+                           + " / " + duplicate_user_value.value + ", aborting";
+                    _logger.LogWarning(msg);
+                    return StatusCode((int)HttpStatusCode.Conflict, msg);
+                }
             }else{
                 _logger.LogInformation("Required adding value without profil.");
             }
