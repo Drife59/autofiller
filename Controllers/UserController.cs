@@ -601,7 +601,7 @@ namespace Application_WEB_MVC.Controllers
             return Ok(logins);
         }
 
-        /* Return all logins associated with domain requested.
+        /* Add a login/psd to the domain provided.
            Note(BG): this will need to be more secure in the future 
          */
         [HttpPost]
