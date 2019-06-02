@@ -640,5 +640,41 @@ namespace Application_WEB_MVC.Controllers
 
             return Ok(new_login);
         }
+
+        /* remove a login/psd to the domain provided.
+           Note(BG): this will need to be more secure in the future 
+         */
+        [HttpDelete]
+        [Route("/user/{email}/login/{login_id}")]
+        public IActionResult add_login(string email, int login_id){
+
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
+                return NotFound("Cannot find user with email: " + email);
+            }
+
+            var login = _context.Logins
+                .Where(l => l.loginId == login_id)
+                .FirstOrDefault();
+
+            if(login == null){
+                return NotFound();
+            }
+
+            if(login.User != user){
+                _logger.LogWarning("User " + email + " is not allowed to delete login: " + login_id);
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "User " + email + " is not allowed to delete login: " + login_id);
+            }
+
+            _context.Logins.Remove(login);
+            _context.SaveChanges();              
+
+            return StatusCode((int)System.Net.HttpStatusCode.NoContent, "Deleted login id:" + login_id);
+        }
     }
 }
