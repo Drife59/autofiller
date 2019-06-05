@@ -641,6 +641,44 @@ namespace Application_WEB_MVC.Controllers
             return Ok(new_login);
         }
 
+        /* Update a login/psd to the domain provided.
+           Note(BG): this will need to be more secure in the future 
+         */
+
+        [HttpPut]
+        [Route("/user/{email}/login/{login_id}/password/{password}")]
+        public IActionResult update_login(string email, int login_id, string password){
+
+            var user = _context.Users
+                .Where(u => u.email == email)
+                .FirstOrDefault();
+            
+            if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
+                return NotFound("Cannot find user with email: " + email);
+            }
+
+            var login = _context.Logins
+                .Where(l => l.loginId == login_id)
+                .FirstOrDefault();
+
+            if(login == null){
+                return NotFound();
+            }
+
+            if(login.User != user){
+                _logger.LogWarning("User " + email + " is not allowed to delete login: " + login_id);
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "User " + email + " is not allowed to delete login: " + login_id);
+            }
+
+            login.password = password;
+            _context.SaveChanges();              
+
+            return Ok(login);
+        }
+        
+
         /* remove a login/psd to the domain provided.
            Note(BG): this will need to be more secure in the future 
          */
