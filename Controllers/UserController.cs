@@ -56,7 +56,26 @@ namespace Application_WEB_MVC.Controllers
                 }  
                 return builder.ToString();  
             }  
-        }  
+        }
+
+        // Return the current password hash, send in header
+        string get_password_hash(){
+            string raw_psd = Request.Headers["Main-Password"];
+            return ComputeSha256Hash(raw_psd);
+        }
+
+        //Return User if found, else null
+        private User get_user_by_email(string email){
+            //Get user then pivot for the line to be added
+            var user = _context.Users
+                .Where(u => u.email == email) 
+                .FirstOrDefault();
+
+            if(user == null){
+                _logger.LogWarning("Cannot find user with email: " + email);
+            }
+            return user;
+        }
 
 
         /*
@@ -125,6 +144,14 @@ namespace Application_WEB_MVC.Controllers
                 return NotFound("Cannot find user");
             }
 
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
+            }
+
             user.password_hash = ComputeSha256Hash(password);
             _context.SaveChanges();
             return Ok(user);
@@ -144,23 +171,20 @@ namespace Application_WEB_MVC.Controllers
                 return NotFound();
             }
 
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
+            }
+
             _context.Users.Remove(user);
             _context.SaveChanges();
             return new NoContentResult();
         }
 
-        //Return User if found, else null
-        private User get_user_by_email(string email){
-            //Get user then pivot for the line to be added
-            var user = _context.Users
-                .Where(u => u.email == email) 
-                .FirstOrDefault();
-
-            if(user == null){
-                _logger.LogWarning("Cannot find user with email: " + email);
-            }
-            return user;
-        }
+        
 
         /*
             ----------------------------
@@ -180,6 +204,14 @@ namespace Application_WEB_MVC.Controllers
             if(user == null){
                 _logger.LogWarning("Cannot find user with email: " + email);
                 return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
             }
 
             var values = _context.UserValues
@@ -207,6 +239,14 @@ namespace Application_WEB_MVC.Controllers
             if(user == null){
                 _logger.LogWarning("Cannot find user with email: " + email);
                 return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
             }
 
             if( pivot != null && filter_restitution_enabled == true){
@@ -268,6 +308,14 @@ namespace Application_WEB_MVC.Controllers
                 return StatusCode((int)HttpStatusCode.NotFound);
             }
 
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
+            }
+
             var user_values_enabled = _context.UserValues
                 .Where(u => u.User == user)
                 .Where(u => u.Profil == null)
@@ -318,6 +366,14 @@ namespace Application_WEB_MVC.Controllers
             var user = get_user_by_email(email);
             if(user == null){
                 return NotFound();
+            }
+
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
             }
 
             var pivot = _context.Pivots
@@ -434,6 +490,14 @@ namespace Application_WEB_MVC.Controllers
                 return StatusCode((int)HttpStatusCode.NotFound);
             }
 
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
+            }
+
             var profil = _context.Profils
                 .Where(p => p.User == user)
                 .Where(p => p.profilName == profilName) 
@@ -466,6 +530,15 @@ namespace Application_WEB_MVC.Controllers
                 _logger.LogWarning("Cannot find user with email: " + email);
                 return StatusCode((int)HttpStatusCode.NotFound);
             }
+
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
+            }
+
             return Ok(_context.Profils
                         .Where(p => p.User == user)
                         .ToList());
@@ -481,6 +554,14 @@ namespace Application_WEB_MVC.Controllers
             if(user == null){
                 _logger.LogWarning("Cannot find user with email: " + email);
                 return StatusCode((int)HttpStatusCode.NotFound, ("Cannot find user with email: " + email));
+            }
+
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
             }
 
             //Does not allow to modify a profil if it is not one of the user provided
@@ -506,6 +587,14 @@ namespace Application_WEB_MVC.Controllers
             if(user == null){
                 _logger.LogWarning("Cannot find user with email: " + email);
                 return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
             }
 
             var profil = _context.Profils
@@ -548,6 +637,14 @@ namespace Application_WEB_MVC.Controllers
                 return StatusCode((int)HttpStatusCode.NotFound);
             }
 
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
+            }
+
             return  Ok(_context.UserValues
                 .Where(v => v.User == user)
                 .Where(v => v.Profil != null)
@@ -577,6 +674,14 @@ namespace Application_WEB_MVC.Controllers
                 _logger.LogWarning("Cannot find user with email: " + email);
                 return NotFound("Cannot find user with email: " + email);
                 //return StatusCode((int)HttpStatusCode.NotFound);
+            }
+
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
             }
 
             var website = _context.Websites
@@ -615,6 +720,14 @@ namespace Application_WEB_MVC.Controllers
             if(user == null){
                 _logger.LogWarning("Cannot find user with email: " + email);
                 return NotFound("Cannot find user with email: " + email);
+            }
+
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
             }
 
             var website = _context.Websites
@@ -658,6 +771,14 @@ namespace Application_WEB_MVC.Controllers
                 return NotFound("Cannot find user with email: " + email);
             }
 
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
+            }
+
             var login = _context.Logins
                 .Where(l => l.loginId == login_id)
                 .FirstOrDefault();
@@ -693,6 +814,14 @@ namespace Application_WEB_MVC.Controllers
             if(user == null){
                 _logger.LogWarning("Cannot find user with email: " + email);
                 return NotFound("Cannot find user with email: " + email);
+            }
+
+            var current_psd_hash = get_password_hash();
+
+            if(user.password_hash != current_psd_hash){
+                _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
+                return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
+                    "Password in request does not correspond to password user. Forbid action.");
             }
 
             var login = _context.Logins

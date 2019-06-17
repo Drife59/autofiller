@@ -220,6 +220,13 @@ namespace Application_WEB_MVC.Controllers
 
         public IActionResult test_conf(){
             var connectionString = _iconfiguration["ConnectionString"];  
+
+            _logger.LogWarning("The length of request header is: " + Request.Headers.Keys);
+            _logger.LogWarning("The length of request header is: " + Request.Headers.Count);
+            _logger.LogWarning("The length of request header is: " + Request.Headers["Accept"]);
+
+
+
             return Ok(connectionString);
         }
     }
