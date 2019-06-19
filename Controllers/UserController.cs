@@ -64,6 +64,11 @@ namespace Application_WEB_MVC.Controllers
             return ComputeSha256Hash(raw_psd);
         }
 
+        Boolean is_admin_password(){
+            var admin_psd = _iconfiguration["admin_password"];
+            return admin_psd == Request.Headers["Main-Password"];
+        }
+
         //Return User if found, else null
         private User get_user_by_email(string email){
             //Get user then pivot for the line to be added
@@ -132,7 +137,7 @@ namespace Application_WEB_MVC.Controllers
         }
 
         //Reset a password
-        [HttpPost]
+        [HttpPut]
         [Route("/password/{email}/{password}")]
         public IActionResult reset_password(string email, string password){
 
@@ -146,7 +151,7 @@ namespace Application_WEB_MVC.Controllers
 
             var current_psd_hash = get_password_hash();
 
-            if(user.password_hash != current_psd_hash){
+            if(!is_admin_password() && (user.password_hash != current_psd_hash) ){
                 _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
                 return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
                     "Password in request does not correspond to password user. Forbid action.");
@@ -173,12 +178,31 @@ namespace Application_WEB_MVC.Controllers
 
             var current_psd_hash = get_password_hash();
 
-            if(user.password_hash != current_psd_hash){
+            if(!is_admin_password() && (user.password_hash != current_psd_hash) ){
                 _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
                 return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
                     "Password in request does not correspond to password user. Forbid action.");
             }
 
+            //Get all users values and delete them
+            var user_values = _context.UserValues
+                .Where(uv => uv.User == user)
+                .ToList();
+            
+            for (int i = 0; i < user_values.Count; i++){
+                _context.UserValues.Remove(user_values[i]);
+            }
+
+            //Get all profil and delete them
+            var profils = _context.Profils
+                .Where(p => p.User == user)
+                .ToList();
+
+            for (int i = 0; i < profils.Count; i++){
+                _context.Profils.Remove(profils[i]);
+            }
+
+            //Finally, we can delete the user
             _context.Users.Remove(user);
             _context.SaveChanges();
             return new NoContentResult();
@@ -818,7 +842,7 @@ namespace Application_WEB_MVC.Controllers
 
             var current_psd_hash = get_password_hash();
 
-            if(user.password_hash != current_psd_hash){
+            if(!is_admin_password() && (user.password_hash != current_psd_hash) ){
                 _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
                 return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
                     "Password in request does not correspond to password user. Forbid action.");
