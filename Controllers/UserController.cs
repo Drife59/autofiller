@@ -615,7 +615,7 @@ namespace Application_WEB_MVC.Controllers
 
             var current_psd_hash = get_password_hash();
 
-            if(user.password_hash != current_psd_hash){
+            if(!is_admin_password() && (user.password_hash != current_psd_hash) ){
                 _logger.LogWarning("Password in request does not correspond to password user. Forbid action.");
                 return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
                     "Password in request does not correspond to password user. Forbid action.");
