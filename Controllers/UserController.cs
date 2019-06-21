@@ -829,7 +829,7 @@ namespace Application_WEB_MVC.Controllers
          */
         [HttpDelete]
         [Route("/user/{email}/login/{login_id}")]
-        public IActionResult add_login(string email, int login_id){
+        public IActionResult delete_login(string email, int login_id){
 
             var user = _context.Users
                 .Where(u => u.email == email)
@@ -848,21 +848,21 @@ namespace Application_WEB_MVC.Controllers
                     "Password in request does not correspond to password user. Forbid action.");
             }
 
-            var login = _context.Logins
+            var current_login = _context.Logins
                 .Where(l => l.loginId == login_id)
                 .FirstOrDefault();
 
-            if(login == null){
+            if(current_login == null){
                 return NotFound();
             }
 
-            if(login.User != user){
+            if(current_login.User != user){
                 _logger.LogWarning("User " + email + " is not allowed to delete login: " + login_id);
                 return StatusCode((int)System.Net.HttpStatusCode.Forbidden, 
                     "User " + email + " is not allowed to delete login: " + login_id);
             }
 
-            _context.Logins.Remove(login);
+            _context.Logins.Remove(current_login);
             _context.SaveChanges();              
 
             return StatusCode((int)System.Net.HttpStatusCode.NoContent, "Deleted login id:" + login_id);
