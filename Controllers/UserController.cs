@@ -202,6 +202,15 @@ namespace Application_WEB_MVC.Controllers
                 _context.Profils.Remove(profils[i]);
             }
 
+            // Get all login / psd
+            var logins = _context.Logins
+                .Where(l => l.User == user)
+                .ToList();
+
+            for (int i = 0; i < logins.Count; i++){
+                _context.Logins.Remove(logins[i]);
+            }
+
             //Finally, we can delete the user
             _context.Users.Remove(user);
             _context.SaveChanges();
