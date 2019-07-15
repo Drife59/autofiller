@@ -166,6 +166,28 @@ namespace Application_WEB_MVC.Controllers
             _context.Add(key);
 
 
+            // day of birth text
+            pivot = _context.Pivots.Where(p => p.name == "day_of_birth_without_zero").FirstOrDefault();
+            key = Utils.createKeyProfil(website, pivot, "day_birth_without_zero__text");
+            key.day_of_birth = 100;
+            _context.Add(key);
+
+            // day of birth select
+            key = Utils.createKeyProfil(website, pivot, "day_birth_without_zero__select");
+            key.day_of_birth = 100;
+            _context.Add(key);
+
+            // month of birth without zero 
+            pivot = _context.Pivots.Where(p => p.name == "month_of_birth_without_zero").FirstOrDefault();
+            key = Utils.createKeyProfil(website, pivot, "month_birth_without_zero__text");
+            key.month_of_birth = 100;
+            _context.Add(key);
+
+            // month of birth select without zero 
+            key = Utils.createKeyProfil(website, pivot, "month_birth_without_zero__select");
+            key.month_of_birth = 100;
+            _context.Add(key);
+
 
             // indicative
             pivot = _context.Pivots.Where(p => p.name == "indicative").FirstOrDefault();

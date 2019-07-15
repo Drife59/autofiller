@@ -197,6 +197,9 @@ namespace Application_WEB_MVC.Controllers
             key.month_of_birth    = Int32.Parse(item.month_of_birth);
             key.year_of_birth     = Int32.Parse(item.year_of_birth);
 
+            key.day_of_birth_without_zero   = Int32.Parse(item.day_of_birth_without_zero);
+            key.month_of_birth_without_zero = Int32.Parse(item.month_of_birth_without_zero);
+
             key.company         = Int32.Parse(item.company);
             key.homephone       = Int32.Parse(item.homephone);
             /*key.cvv             = Int32.Parse(item.cvv);
@@ -272,6 +275,9 @@ namespace Application_WEB_MVC.Controllers
             key.day_of_birth      = Int32.Parse(item.day_of_birth);
             key.month_of_birth    = Int32.Parse(item.month_of_birth);
             key.year_of_birth     = Int32.Parse(item.year_of_birth);
+
+            key.day_of_birth_without_zero = Int32.Parse(item.day_of_birth_without_zero);
+            key.month_of_birth_without_zero = Int32.Parse(item.month_of_birth_without_zero);
 
             key.company         = Int32.Parse(item.company);
             key.homephone       = Int32.Parse(item.homephone);

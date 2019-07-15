@@ -39,14 +39,16 @@ namespace Application_WEB_MVC.Controllers
             key.main_full_address = 0;
             key.address           = 0;
 
-            key.day_of_birth      = 0;
-            key.month_of_birth    = 0;
-            key.year_of_birth     = 0;
+            key.day_of_birth                = 0;
+            key.month_of_birth              = 0;
+            key.year_of_birth               = 0;
+            key.day_of_birth_without_zero   = 0;
+            key.month_of_birth_without_zero = 0;
 
             key.company         = 0;
             key.homephone       = 0;
-            key.full_birthdate = 0;
-            key.country        = 0;
+            key.full_birthdate  = 0;
+            key.country         = 0;
 
             return key;
         }

@@ -34,6 +34,8 @@ namespace Autofiller.Models
         public string day_of_birth { get; set; }
         public string month_of_birth { get; set; }
         public string year_of_birth { get; set; }
+        public string day_of_birth_without_zero { get; set; }
+        public string month_of_birth_without_zero { get; set; }
 
         public string company { get; set; }
         public string homephone { get; set; }
@@ -99,6 +101,10 @@ namespace Autofiller.Models
         public int day_of_birth { get; set; }
         public int month_of_birth { get; set; }
         public int year_of_birth { get; set; }
+        public int day_of_birth_without_zero { get; set; }
+        public int month_of_birth_without_zero { get; set; }
+
+
 
         public int company { get; set; }
         public int homephone { get; set; }
